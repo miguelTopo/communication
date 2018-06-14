@@ -18,42 +18,31 @@ public class MessageGroupService {
 	}
 
 	public boolean save(MessageGroup entity) {
-		try {
-			messageGroupRepository.save(entity);
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+		messageGroupRepository.save(entity);
+		return true;
 	}
 
 	private Response validMessageGroup(MessageGroup mg) {
-		try {
-			if (mg == null)
-				return new Response(ResponseSeverity.WARN, "");
-			if (StringUtils.isEmpty(mg.getName()))
-				return new Response(ResponseSeverity.WARN, "");
-			return new Response(ResponseSeverity.INFO, "");
-		} catch (Exception e) {
-			throw e;
-		}
+		if (mg == null)
+			return new Response(ResponseSeverity.WARN, "");
+		if (StringUtils.isEmpty(mg.getName()))
+			return new Response(ResponseSeverity.WARN, "");
+		return new Response(ResponseSeverity.INFO, "");
 	}
 
 	public Response saveEntity(MessageGroup entity) {
-		try {
-			Response response = validMessageGroup(entity);
-			if (response.getResponseSeverity().equals(ResponseSeverity.WARN))
-				return response;
-			boolean successSave = save(entity);
-			if (successSave) {
-				response.setMessage("La operación fue exitosa");
-				response.setResponseSeverity(ResponseSeverity.SUCCESS);
-			} else {
-				response.setMessage("Error en la operación");
-				response.setResponseSeverity(ResponseSeverity.ERROR);
-			}
+
+		Response response = validMessageGroup(entity);
+		if (response.getResponseSeverity().equals(ResponseSeverity.WARN))
 			return response;
-		} catch (Exception e) {
-			throw e;
+		boolean successSave = save(entity);
+		if (successSave) {
+			response.setMessage("La operación fue exitosa");
+			response.setResponseSeverity(ResponseSeverity.SUCCESS);
+		} else {
+			response.setMessage("Error en la operación");
+			response.setResponseSeverity(ResponseSeverity.ERROR);
 		}
+		return response;
 	}
 }

@@ -6,5 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/messageRequest")
 public class MessageController {
-
+	
+	public String sendMessage(){
+		return "";
+	}
+	
 }

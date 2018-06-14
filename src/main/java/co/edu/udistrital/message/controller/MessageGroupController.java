@@ -11,7 +11,7 @@ import co.edu.udistrital.message.service.MessageGroupService;
 import co.edu.udistrital.structure.model.Response;
 
 @RestController
-@RequestMapping("/messageGroupRequest")
+@RequestMapping("/messageGroup")
 public class MessageGroupController {
 
 	private final MessageGroupService messageGroupService;
