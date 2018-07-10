@@ -1,4 +1,4 @@
-package co.edu.udistrital.message.model;
+  package co.edu.udistrital.message.model;
 
 import java.util.Date;
 
