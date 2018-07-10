@@ -12,7 +12,7 @@ import books.Book;
 import books.BookRepository;
 import books.BookRepositoryImpl;
 
-@RestController(value = "/context")
+@RestController
 public class CustomerController {
 
 	@Autowired
@@ -21,6 +21,12 @@ public class CustomerController {
 	@RequestMapping(method = RequestMethod.POST, path = "/book")
 	public ResponseEntity<Book> insert(@RequestBody Book book) {
 		return service.save(book).map(v -> ResponseEntity.ok().body(v)).orElse(ResponseEntity.noContent().build());
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/list")
+	public ResponseEntity<Book> list() {
+		return service.save(new Book()).map(v -> ResponseEntity.ok().body(v))
+				.orElse(ResponseEntity.noContent().build());
 	}
 
 }

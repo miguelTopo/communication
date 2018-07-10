@@ -6,9 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import co.edu.udistrital.structure.enums.DataState;
-import lombok.Data;
 
-@Data
 @Document(collection = "User")
 public class User {
 
@@ -18,7 +16,7 @@ public class User {
 	private String name;
 
 	private String email;
-
+	
 	private Date dateCreation;
 
 	private DataState dataState;
