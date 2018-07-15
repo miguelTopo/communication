@@ -11,11 +11,21 @@ import co.edu.udistrital.contact.repository.UserContactRepository;
 @Service
 public class UserContactService {
 
-	@Autowired
 	private UserContactRepository userContactRepository;
 
-	public List<UserContact> findByUserContactId(String userContactId) {
-		return userContactRepository.findByUserContactId(userContactId);
+	@Autowired
+	public UserContactService(UserContactRepository userContactRepository) {
+		this.userContactRepository = userContactRepository;
+	}
+
+	// public List<UserContact> findByUserId(String userContactId) {
+	// List<UserContact> test =this.userContactRepository.findByUserId(userContactId);
+	// return test ;
+	// }
+
+	public List<UserContact> findAll() {
+		List<UserContact> test = this.userContactRepository.findAll();
+		return test;
 	}
 
 }

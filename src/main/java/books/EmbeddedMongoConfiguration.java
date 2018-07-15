@@ -4,7 +4,6 @@
 //
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.autoconfigure.mongo.MongoProperties;
-//import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 //import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoProperties;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;

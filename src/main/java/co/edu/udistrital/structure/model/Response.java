@@ -1,21 +1,45 @@
 package co.edu.udistrital.structure.model;
 
-import co.edu.udistrital.structure.enums.ResponseSeverity;
+import java.util.List;
+
+import co.edu.udistrital.structure.enums.Severity;
 
 public class Response {
 
+	private String title;
 	private String message;
+	private Severity severity;
+	private List<?> list;
+	private Object entity;
 
-	private ResponseSeverity responseSeverity;
+	public Response() {}
 
-	private String response;
-
-	public Response() {
+	public Response(String title, String message, Severity severity) {
+		this.title = title;
+		this.message = message;
+		this.severity = severity;
 	}
 
-	public Response(ResponseSeverity responseSeverity, String message) {
-		this.responseSeverity = responseSeverity;
+	public Response(String title, String message, Severity severity, Object entity) {
+		this.title = title;
 		this.message = message;
+		this.severity = severity;
+		this.entity = entity;
+	}
+
+	public Response(String title, String message, Severity severity, List<?> list) {
+		this.title = title;
+		this.message = message;
+		this.severity = severity;
+		this.list = list;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getMessage() {
@@ -26,40 +50,27 @@ public class Response {
 		this.message = message;
 	}
 
-	public ResponseSeverity getResponseSeverity() {
-		return responseSeverity;
+	public Severity getSeverity() {
+		return severity;
 	}
 
-	public void setResponseSeverity(ResponseSeverity responseSeverity) {
-		this.responseSeverity = responseSeverity;
+	public void setSeverity(Severity severity) {
+		this.severity = severity;
 	}
 
-	public String getResponse() {
-		return response;
+	public List<?> getList() {
+		return list;
 	}
 
-	public void setResponse(String response) {
-		this.response = response;
+	public void setList(List<?> list) {
+		this.list = list;
 	}
 
-	public Response successResponse(Object o) {
-		this.setResponseSeverity(ResponseSeverity.SUCCESS);
-		return this;
+	public Object getEntity() {
+		return entity;
 	}
 
-	public Response infoResponse(Object o) {
-		this.setResponseSeverity(ResponseSeverity.INFO);
-		return this;
+	public void setEntity(Object entity) {
+		this.entity = entity;
 	}
-
-	public Response warnResponse(Object o) {
-		this.setResponseSeverity(ResponseSeverity.WARN);
-		return this;
-	}
-
-	public Response errorResponse(Object o) {
-		this.setResponseSeverity(ResponseSeverity.ERROR);
-		return this;
-	}
-
 }

@@ -1,28 +1,24 @@
 package co.edu.udistrital.user.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.udistrital.structure.model.Response;
-import co.edu.udistrital.user.service.UserService;
+import co.edu.udistrital.contact.service.UserContactService;
+import co.edu.udistrital.structure.service.ResponseService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(path = "/user")
 public class UserController {
 
-	private final UserService userService;
+	private final UserContactService userContactService;
+	private final ResponseService responseService;
 
 	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
+	public UserController(UserContactService userContactService, ResponseService responseService) {
+		this.userContactService = userContactService;
+		this.responseService = responseService;
 	}
 
-	@RequestMapping("/contactList")
-	public Response contactList(@RequestBody String userId) {
-		System.out.println(userId);
-		return new Response();
-	}
 
 }

@@ -6,37 +6,65 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import co.edu.udistrital.structure.enums.DataState;
+import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.User;
-import lombok.Getter;
-import lombok.Setter;
 
 @Document(collection = "MessageGroup")
 public class MessageGroup {
 
-	@Id
-	@Getter
-	@Setter
-	private String id;
-
-	@Getter
-	@Setter
+	@Id private String id;
 	private String name;
-
-	@Getter
-	@Setter
 	private Date creationDate;
-
-	@Getter
-	@Setter
-	private DataState dataState;
-
-	@Getter
-	@Setter
+	private State dataState;
 	private List<String> adminIdList;
-
-	@Getter
-	@Setter
 	private List<User> adminList;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public State getDataState() {
+		return dataState;
+	}
+
+	public void setDataState(State dataState) {
+		this.dataState = dataState;
+	}
+
+	public List<String> getAdminIdList() {
+		return adminIdList;
+	}
+
+	public void setAdminIdList(List<String> adminIdList) {
+		this.adminIdList = adminIdList;
+	}
+
+	public List<User> getAdminList() {
+		return adminList;
+	}
+
+	public void setAdminList(List<User> adminList) {
+		this.adminList = adminList;
+	}
 
 }

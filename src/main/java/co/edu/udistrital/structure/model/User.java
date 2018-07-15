@@ -5,21 +5,22 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import co.edu.udistrital.structure.enums.DataState;
+import co.edu.udistrital.structure.enums.State;
 
 @Document(collection = "User")
 public class User {
 
-	@Id
-	private String id;
+	@Id private String id;
 
 	private String name;
 
 	private String email;
-	
+
+	private String mobilePhone;
+
 	private Date dateCreation;
 
-	private DataState dataState;
+	private State state;
 
 	public String getId() {
 		return id;
@@ -45,6 +46,14 @@ public class User {
 		this.email = email;
 	}
 
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+
 	public Date getDateCreation() {
 		return dateCreation;
 	}
@@ -53,12 +62,12 @@ public class User {
 		this.dateCreation = dateCreation;
 	}
 
-	public DataState getDataState() {
-		return dataState;
+	public State getState() {
+		return state;
 	}
 
-	public void setDataState(DataState dataState) {
-		this.dataState = dataState;
+	public void setState(State state) {
+		this.state = state;
 	}
 
 }

@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookRepositoryImpl implements BookRepositoryCustom {
 
-	@Autowired
 	private final MongoTemplate mongoTemplate;
 
+	@Autowired
 	public BookRepositoryImpl(MongoTemplate mongoTemplate) {
 		this.mongoTemplate = mongoTemplate;
 	}
@@ -34,7 +34,7 @@ public class BookRepositoryImpl implements BookRepositoryCustom {
 		if (dynamicQuery.getPublishDateBefore() != null) {
 			criteria.add(Criteria.where("publishDate").lte(dynamicQuery.getPublishDateBefore()));
 		}
-
+		
 		if (dynamicQuery.getPublishDateAfter() != null) {
 			criteria.add(Criteria.where("publishDate").gte(dynamicQuery.getPublishDateBefore()));
 		}
