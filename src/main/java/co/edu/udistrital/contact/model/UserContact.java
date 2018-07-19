@@ -1,8 +1,7 @@
 package co.edu.udistrital.contact.model;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import co.edu.udistrital.structure.enums.State;
@@ -15,11 +14,7 @@ public class UserContact {
 
 	private String userId;
 
-	private List<String> contactId;
-
-	private User user;
-
-	private User contact;
+	private String contactId;
 
 	private State state;
 
@@ -39,36 +34,19 @@ public class UserContact {
 		this.userId = userId;
 	}
 
-
-	public List<String> getContactId() {
-		return contactId;
-	}
-
-	public void setContactId(List<String> contactId) {
-		this.contactId = contactId;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public User getContact() {
-		return contact;
-	}
-
-	public void setContact(User contact) {
-		this.contact = contact;
-	}
-
 	public State getState() {
 		return state;
 	}
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	public String getContactId() {
+		return contactId;
+	}
+
+	public void setContactId(String contactId) {
+		this.contactId = contactId;
 	}
 }

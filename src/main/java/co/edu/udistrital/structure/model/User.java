@@ -1,10 +1,13 @@
 package co.edu.udistrital.structure.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.structure.enums.State;
 
 @Document(collection = "User")
@@ -21,6 +24,8 @@ public class User {
 	private Date dateCreation;
 
 	private State state;
+
+	@DBRef private List<UserContact> userContacts;
 
 	public String getId() {
 		return id;
@@ -70,4 +75,11 @@ public class User {
 		this.state = state;
 	}
 
+	public List<UserContact> getUserContacts() {
+		return userContacts;
+	}
+
+	public void setUserContacts(List<UserContact> userContacts) {
+		this.userContacts = userContacts;
+	}
 }
