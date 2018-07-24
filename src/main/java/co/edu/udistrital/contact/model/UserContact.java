@@ -12,11 +12,11 @@ public class UserContact {
 
 	@Id private String id;
 
-	private String userId;
-
-	private String contactId;
-
 	private State state;
+
+	private String customName;
+
+	private String photoUrl;
 
 	public String getId() {
 		return id;
@@ -24,14 +24,6 @@ public class UserContact {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public State getState() {
@@ -42,11 +34,22 @@ public class UserContact {
 		this.state = state;
 	}
 
-	public String getContactId() {
-		return contactId;
+	public String getCustomName() {
+		return customName;
 	}
 
-	public void setContactId(String contactId) {
-		this.contactId = contactId;
+	public void setCustomName(String customName) {
+		this.customName = customName;
 	}
+
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
+
+	public void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
+	}
+
+
+
 }

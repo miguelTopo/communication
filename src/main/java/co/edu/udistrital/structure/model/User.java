@@ -13,6 +13,8 @@ import co.edu.udistrital.structure.enums.State;
 @Document(collection = "User")
 public class User {
 
+	public User() {}
+
 	@Id private String id;
 
 	private String name;

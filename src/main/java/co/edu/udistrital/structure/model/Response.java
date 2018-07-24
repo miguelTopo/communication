@@ -11,6 +11,7 @@ public class Response {
 	private Severity severity;
 	private List<?> list;
 	private Object entity;
+	private boolean existInDB;
 
 	public Response() {}
 
@@ -32,6 +33,13 @@ public class Response {
 		this.message = message;
 		this.severity = severity;
 		this.list = list;
+	}
+
+	public Response(String title, String message, Severity severity, boolean existInDB) {
+		this.title = title;
+		this.message = message;
+		this.severity = severity;
+		this.existInDB = existInDB;
 	}
 
 	public String getTitle() {
@@ -73,4 +81,13 @@ public class Response {
 	public void setEntity(Object entity) {
 		this.entity = entity;
 	}
+
+	public boolean isExistInDB() {
+		return existInDB;
+	}
+
+	public void setExistInDB(boolean existInDB) {
+		this.existInDB = existInDB;
+	}
+
 }

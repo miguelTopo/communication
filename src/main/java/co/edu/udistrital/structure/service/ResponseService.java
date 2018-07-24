@@ -59,4 +59,20 @@ public class ResponseService {
 	public Response successResponse(String title, String message, List<?> list) {
 		return new Response(title, message, Severity.SUCCESS, list);
 	}
+
+	public Response warnResponse(String title, String message, boolean existInDB) {
+		return new Response(title, message, Severity.WARN, existInDB);
+	}
+
+	public Response infoResponse(String title, String message, boolean existInDB) {
+		return new Response(title, message, Severity.INFO, existInDB);
+	}
+
+	public Response errorResponse(String title, String message, boolean existInDB) {
+		return new Response(title, message, Severity.ERROR, existInDB);
+	}
+
+	public Response successResponse(String title, String message, boolean existInDB) {
+		return new Response(title, message, Severity.SUCCESS, existInDB);
+	}
 }
