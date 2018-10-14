@@ -1,21 +1,38 @@
 package co.edu.udistrital.message.model;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import co.edu.udistrital.message.enums.MessageReadState;
 import co.edu.udistrital.structure.model.User;
 
 @Document(collection = "MessageRecipient")
 public class MessageRecipient {
 
+	public MessageRecipient() {
+		// Basic Empty Constructor
+	}
+
 	@Id private String id;
-	private String recipientId;
-	private User recipientUser;
+
+	private String recipientUserId;
+
 	private String recipientMessageGroupId;
-	private MessageGroup recipientMessageGroup;
+
 	private String messageId;
-	private Message message;
-	private boolean isRead;
+
+	private Date readDate;
+
+	@Transient private Message message;
+
+	@Transient private User recipientUser;
+
+	@Transient private MessageGroup recipientMessageGroup;
+
+	private MessageReadState messageReadState;
 
 	public String getId() {
 		return id;
@@ -23,14 +40,6 @@ public class MessageRecipient {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getRecipientId() {
-		return recipientId;
-	}
-
-	public void setRecipientId(String recipientId) {
-		this.recipientId = recipientId;
 	}
 
 	public User getRecipientUser() {
@@ -73,12 +82,28 @@ public class MessageRecipient {
 		this.message = message;
 	}
 
-	public boolean isRead() {
-		return isRead;
+	public String getRecipientUserId() {
+		return recipientUserId;
 	}
 
-	public void setRead(boolean isRead) {
-		this.isRead = isRead;
+	public void setRecipientUserId(String recipientUserId) {
+		this.recipientUserId = recipientUserId;
+	}
+
+	public MessageReadState getMessageReadState() {
+		return messageReadState;
+	}
+
+	public void setMessageReadState(MessageReadState messageReadState) {
+		this.messageReadState = messageReadState;
+	}
+
+	public Date getReadDate() {
+		return readDate;
+	}
+
+	public void setReadDate(Date readDate) {
+		this.readDate = readDate;
 	}
 
 

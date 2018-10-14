@@ -1,22 +1,22 @@
 package co.edu.udistrital.contact.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.User;
 
 @Document(collection = "UserContact")
 public class UserContact {
 
-	@Id private String id;
+	@Id @Indexed private String id;
 
-	private State state;
+	@Transient private User user;
+
+	@Indexed private String userId;
 
 	private String customName;
-
-	private String photoUrl;
 
 	public String getId() {
 		return id;
@@ -26,12 +26,12 @@ public class UserContact {
 		this.id = id;
 	}
 
-	public State getState() {
-		return state;
+	public User getUser() {
+		return user;
 	}
 
-	public void setState(State state) {
-		this.state = state;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getCustomName() {
@@ -42,14 +42,11 @@ public class UserContact {
 		this.customName = customName;
 	}
 
-	public String getPhotoUrl() {
-		return photoUrl;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setPhotoUrl(String photoUrl) {
-		this.photoUrl = photoUrl;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-
-
-
 }

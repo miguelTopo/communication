@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 import co.edu.udistrital.contact.model.UserContact;
 
 @Repository
-public interface UserContactRepository extends MongoRepository<UserContact, String> {
+public interface UserContactRepository extends MongoRepository<UserContact, String>, UserContactRepositoryCustom {
+
 }

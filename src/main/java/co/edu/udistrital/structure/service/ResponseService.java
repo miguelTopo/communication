@@ -10,7 +10,9 @@ import co.edu.udistrital.structure.model.Response;
 @Service
 public class ResponseService {
 
-	private ResponseService() {}
+	public ResponseService() {
+		// default empty constructor
+	}
 
 	public Response warnMessage(String title, String message) {
 		return new Response(title, message, Severity.WARN);
@@ -60,19 +62,47 @@ public class ResponseService {
 		return new Response(title, message, Severity.SUCCESS, list);
 	}
 
-	public Response warnResponse(String title, String message, boolean existInDB) {
-		return new Response(title, message, Severity.WARN, existInDB);
+	public Response warnResponse(String title, String message) {
+		return new Response(title, message, Severity.WARN);
 	}
 
-	public Response infoResponse(String title, String message, boolean existInDB) {
-		return new Response(title, message, Severity.INFO, existInDB);
+	public Response infoResponse(String title, String message) {
+		return new Response(title, message, Severity.INFO);
 	}
 
-	public Response errorResponse(String title, String message, boolean existInDB) {
-		return new Response(title, message, Severity.ERROR, existInDB);
+	public Response errorResponse(String title, String message) {
+		return new Response(title, message, Severity.ERROR);
 	}
 
-	public Response successResponse(String title, String message, boolean existInDB) {
-		return new Response(title, message, Severity.SUCCESS, existInDB);
+	public Response successResponse(String title, String message) {
+		return new Response(title, message, Severity.SUCCESS);
+	}
+
+	public Response warnResponse(String title, String message, Response response) {
+		response.setTitle(title);
+		response.setMessage(message);
+		response.setSeverity(Severity.WARN);
+		return response;
+	}
+
+	public Response infoResponse(String title, String message, Response response) {
+		response.setTitle(title);
+		response.setMessage(message);
+		response.setSeverity(Severity.INFO);
+		return response;
+	}
+
+	public Response errorResponse(String title, String message, Response response) {
+		response.setTitle(title);
+		response.setMessage(message);
+		response.setSeverity(Severity.ERROR);
+		return response;
+	}
+
+	public Response successResponse(String title, String message, Response response) {
+		response.setTitle(title);
+		response.setMessage(message);
+		response.setSeverity(Severity.SUCCESS);
+		return response;
 	}
 }

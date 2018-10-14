@@ -11,7 +11,7 @@ public class Response {
 	private Severity severity;
 	private List<?> list;
 	private Object entity;
-	private boolean existInDB;
+	private boolean booleanResponse;
 
 	public Response() {}
 
@@ -19,6 +19,7 @@ public class Response {
 		this.title = title;
 		this.message = message;
 		this.severity = severity;
+		this.booleanResponse = severity.equals(Severity.SUCCESS);
 	}
 
 	public Response(String title, String message, Severity severity, Object entity) {
@@ -26,6 +27,7 @@ public class Response {
 		this.message = message;
 		this.severity = severity;
 		this.entity = entity;
+		this.booleanResponse = severity.equals(Severity.SUCCESS);
 	}
 
 	public Response(String title, String message, Severity severity, List<?> list) {
@@ -33,13 +35,7 @@ public class Response {
 		this.message = message;
 		this.severity = severity;
 		this.list = list;
-	}
-
-	public Response(String title, String message, Severity severity, boolean existInDB) {
-		this.title = title;
-		this.message = message;
-		this.severity = severity;
-		this.existInDB = existInDB;
+		this.booleanResponse = severity.equals(Severity.SUCCESS);
 	}
 
 	public String getTitle() {
@@ -82,12 +78,14 @@ public class Response {
 		this.entity = entity;
 	}
 
-	public boolean isExistInDB() {
-		return existInDB;
+	public boolean isBooleanResponse() {
+		return booleanResponse;
 	}
 
-	public void setExistInDB(boolean existInDB) {
-		this.existInDB = existInDB;
+	public void setBooleanResponse(boolean booleanResponse) {
+		this.booleanResponse = booleanResponse;
 	}
+
+
 
 }

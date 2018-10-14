@@ -3,25 +3,35 @@ package co.edu.udistrital.message.model;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.multipart.MultipartFile;
 
+import co.edu.udistrital.message.enums.MessageType;
 import co.edu.udistrital.structure.model.User;
 
 @Document(collection = "Message")
 public class Message {
 
 	@Id private String id;
-	private String subject;
-	private User userCreator;
-	private String userCreatorId;
+
+	@Transient private User senderUser;
+
+	@Transient private User receiverUser;
+
+	@Transient private MultipartFile multipartFile;
+
+	private String senderUserId;
+
 	private String messageBody;
+
+	private String file;
+
 	private Date creationDate;
+
 	private String parentMessageId;
-	private Date expirationDate;
-	private boolean isReminder;
-	private Date nextReminderDate;
-	private ReminderFrequency reminderFrequency;
-	private String reminderFrequencyId;
+
+	private MessageType messageType;
 
 	public String getId() {
 		return id;
@@ -31,28 +41,12 @@ public class Message {
 		this.id = id;
 	}
 
-	public String getSubject() {
-		return subject;
+	public User getSenderUser() {
+		return senderUser;
 	}
 
-	public void setSubject(String subject) {
-		this.subject = subject;
-	}
-
-	public User getUserCreator() {
-		return userCreator;
-	}
-
-	public void setUserCreator(User userCreator) {
-		this.userCreator = userCreator;
-	}
-
-	public String getUserCreatorId() {
-		return userCreatorId;
-	}
-
-	public void setUserCreatorId(String userCreatorId) {
-		this.userCreatorId = userCreatorId;
+	public void setSenderUser(User senderUser) {
+		this.senderUser = senderUser;
 	}
 
 	public String getMessageBody() {
@@ -79,44 +73,44 @@ public class Message {
 		this.parentMessageId = parentMessageId;
 	}
 
-	public Date getExpirationDate() {
-		return expirationDate;
+	public MessageType getMessageType() {
+		return messageType;
 	}
 
-	public void setExpirationDate(Date expirationDate) {
-		this.expirationDate = expirationDate;
+	public void setMessageType(MessageType messageType) {
+		this.messageType = messageType;
 	}
 
-	public boolean isReminder() {
-		return isReminder;
+	public String getSenderUserId() {
+		return senderUserId;
 	}
 
-	public void setReminder(boolean isReminder) {
-		this.isReminder = isReminder;
+	public void setSenderUserId(String senderUserId) {
+		this.senderUserId = senderUserId;
 	}
 
-	public Date getNextReminderDate() {
-		return nextReminderDate;
+	public User getReceiverUser() {
+		return receiverUser;
 	}
 
-	public void setNextReminderDate(Date nextReminderDate) {
-		this.nextReminderDate = nextReminderDate;
+	public void setReceiverUser(User receiverUser) {
+		this.receiverUser = receiverUser;
 	}
 
-	public ReminderFrequency getReminderFrequency() {
-		return reminderFrequency;
+	public MultipartFile getMultipartFile() {
+		return multipartFile;
 	}
 
-	public void setReminderFrequency(ReminderFrequency reminderFrequency) {
-		this.reminderFrequency = reminderFrequency;
+	public void setMultipartFile(MultipartFile multipartFile) {
+		this.multipartFile = multipartFile;
 	}
 
-	public String getReminderFrequencyId() {
-		return reminderFrequencyId;
+	public String getFile() {
+		return file;
 	}
 
-	public void setReminderFrequencyId(String reminderFrequencyId) {
-		this.reminderFrequencyId = reminderFrequencyId;
+	public void setFile(String file) {
+		this.file = file;
 	}
 
 
