@@ -1,5 +1,7 @@
 package co.edu.udistrital.message.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -45,7 +47,7 @@ public class MessageController {
 		if (message == null)
 			return ResponseEntity.ok()
 				.body(responseService.warnMessage("Enviar mensaje", "Ocurrió un error, intente nuevamente o consulte al administrador"));
-		return ResponseEntity.ok().body(this.messageService.sendText(message));
+		return ResponseEntity.ok().body(this.messageService.sendTextMessage(message));
 	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/talk")
@@ -75,4 +77,17 @@ public class MessageController {
 		message.setMultipartFile(file);
 		return ResponseEntity.ok().body(this.messageService.sendVideo(message));
 	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/list")
+	public ResponseEntity<Response> testList() {
+		List<Message> messageList = this.messageService.findAll();
+		return ResponseEntity.ok().body(responseService.successResponse("", "", messageList));
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, path = "/test")	
+	public ResponseEntity<Response> test() {
+		boolean success = this.messageService.saveOne();
+		return ResponseEntity.ok().body(responseService.successResponse("", "", success));
+	}
+
 }

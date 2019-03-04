@@ -3,16 +3,19 @@ package co.edu.udistrital.message.model;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.User;
 
-@Document(collection = "MessageGroup")
 public class MessageGroup {
 
-	@Id private String id;
+	@Id @GeneratedValue(generator = "increment") @GenericGenerator(name = "increment", strategy = "increment") private String id;
 	private String name;
 	private Date creationDate;
 	private State dataState;

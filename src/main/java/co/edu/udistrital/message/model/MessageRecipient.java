@@ -1,46 +1,43 @@
 package co.edu.udistrital.message.model;
 
-import java.util.Date;
+import java.util.Calendar;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import co.edu.udistrital.common.model.CoreEntity;
 import co.edu.udistrital.message.enums.MessageReadState;
 import co.edu.udistrital.structure.model.User;
 
-@Document(collection = "MessageRecipient")
-public class MessageRecipient {
+@Entity
+@Table(name = "MessageRecipient")
+public class MessageRecipient extends CoreEntity {
 
 	public MessageRecipient() {
 		// Basic Empty Constructor
 	}
 
-	@Id private String id;
+	@Column(name = "recipientUserId") private String recipientUserId;
 
-	private String recipientUserId;
+	@Column(name = "recipientMessageGroupId") private String recipientMessageGroupId;
 
-	private String recipientMessageGroupId;
+	@Column(name = "messageId", nullable = false, insertable = false, updatable = false) private Long messageId;
 
-	private String messageId;
+	@Column(name = "readDate") private Calendar readDate;
 
-	private Date readDate;
-
-	@Transient private Message message;
+	@ManyToOne @JoinColumn(name = "messageId") private Message message;
 
 	@Transient private User recipientUser;
 
 	@Transient private MessageGroup recipientMessageGroup;
 
-	private MessageReadState messageReadState;
+	@Column(name = "messageReadState", nullable = false) private MessageReadState messageReadState;
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public User getRecipientUser() {
 		return recipientUser;
@@ -66,11 +63,11 @@ public class MessageRecipient {
 		this.recipientMessageGroup = recipientMessageGroup;
 	}
 
-	public String getMessageId() {
+	public Long getMessageId() {
 		return messageId;
 	}
 
-	public void setMessageId(String messageId) {
+	public void setMessageId(Long messageId) {
 		this.messageId = messageId;
 	}
 
@@ -98,11 +95,11 @@ public class MessageRecipient {
 		this.messageReadState = messageReadState;
 	}
 
-	public Date getReadDate() {
+	public Calendar getReadDate() {
 		return readDate;
 	}
 
-	public void setReadDate(Date readDate) {
+	public void setReadDate(Calendar readDate) {
 		this.readDate = readDate;
 	}
 
