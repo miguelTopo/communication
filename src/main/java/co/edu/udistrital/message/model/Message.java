@@ -1,13 +1,6 @@
 package co.edu.udistrital.message.model;
 
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import org.springframework.data.annotation.Transient;
 import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.udistrital.common.model.CoreEntity;
@@ -15,29 +8,25 @@ import co.edu.udistrital.message.enums.MessageType;
 import co.edu.udistrital.structure.model.User;
 
 
-@Entity
-@Table(name = "Message")
 public class Message extends CoreEntity {
 
 	public Message() {}
 
-	@Transient private MultipartFile multipartFile;
+	private MultipartFile multipartFile;
 
-	@Column(name = "senderUserId", nullable = false) private String senderUserId;
+	private String senderUserId;
 
-	@Column(name = "messageBody") private String messageBody;
+	private String receiverUserId;
 
-	@Column(name = "file") private String file;
+	private String messageBody;
 
-	@Column(name = "parentMessageId") private String parentMessageId;
+	private String file;
 
 	@Transient private User senderUser;
 
 	@Transient private User receiverUser;
 
-	@Column(name = "messageType", nullable = false) private MessageType messageType;
-
-	@OneToMany(mappedBy = "message") private List<MessageRecipient> messageRecipientList;
+	private MessageType messageType;
 
 	public String getMessageBody() {
 		return messageBody;
@@ -45,14 +34,6 @@ public class Message extends CoreEntity {
 
 	public void setMessageBody(String messageBody) {
 		this.messageBody = messageBody;
-	}
-
-	public String getParentMessageId() {
-		return parentMessageId;
-	}
-
-	public void setParentMessageId(String parentMessageId) {
-		this.parentMessageId = parentMessageId;
 	}
 
 	public MessageType getMessageType() {
@@ -103,14 +84,12 @@ public class Message extends CoreEntity {
 		this.receiverUser = receiverUser;
 	}
 
-	public List<MessageRecipient> getMessageRecipientList() {
-		return messageRecipientList;
+	public String getReceiverUserId() {
+		return receiverUserId;
 	}
 
-	public void setMessageRecipientList(List<MessageRecipient> messageRecipientList) {
-		this.messageRecipientList = messageRecipientList;
+	public void setReceiverUserId(String receiverUserId) {
+		this.receiverUserId = receiverUserId;
 	}
-
-
 
 }

@@ -3,36 +3,33 @@ package co.edu.udistrital.common.model;
 import java.io.Serializable;
 import java.util.Calendar;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.structure.enums.State;
 
-@MappedSuperclass
+
 public abstract class CoreEntity implements Serializable {
 
-	@Id @Column(name = "id", nullable = false, unique = true,
-		updatable = false) @GeneratedValue(strategy = GenerationType.IDENTITY) protected Long id;
+	@Id @Indexed protected String id;
 
-	@Column(name = "creationDate", nullable = false) protected Calendar creationDate;
+	protected Calendar creationDate;
 
-	@Column(name = "updateDate") protected Calendar updateDate;
+	protected Calendar updateDate;
 
-	@Column(name = "creationUserId") protected String creationUserId;
+	protected String creationUserId;
 
-	@Column(name = "updateUserId") protected String updateUserId;
+	protected String updateUserId;
 
-	@Column(name = "state") protected State state;
+	protected State state;
 
-	public Long getId() {
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

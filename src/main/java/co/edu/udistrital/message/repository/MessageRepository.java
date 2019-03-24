@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import co.edu.udistrital.message.model.Message;
 
 @Repository
-public interface MessageRepository extends MongoRepository<Message, String>, MessageRepositoryCustom {
+public interface MessageRepository extends MongoRepository<Message, String> {
 
 }

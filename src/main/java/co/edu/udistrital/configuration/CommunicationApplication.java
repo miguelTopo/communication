@@ -3,8 +3,10 @@ package co.edu.udistrital.configuration;
 
 import java.util.Locale;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -21,15 +23,14 @@ import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.contact.repository.UserContactRepository;
 import co.edu.udistrital.contact.service.UserContactService;
 import co.edu.udistrital.core.service.FileSystemStorageService;
+import co.edu.udistrital.core.service.StorageService;
 import co.edu.udistrital.event.controller.EventController;
 import co.edu.udistrital.event.model.Event;
 import co.edu.udistrital.event.repository.EventRepository;
 import co.edu.udistrital.event.service.EventService;
 import co.edu.udistrital.message.controller.MessageController;
-import co.edu.udistrital.message.model.MessageRecipient;
-import co.edu.udistrital.message.repository.MessageRecipientRepository;
-import co.edu.udistrital.message.repository.MessageRepository;
-import co.edu.udistrital.message.service.MessageRecipientService;
+import co.edu.udistrital.message.repository.ConversationRepository;
+import co.edu.udistrital.message.service.ConversationService;
 import co.edu.udistrital.message.service.MessageService;
 import co.edu.udistrital.structure.model.User;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -37,28 +38,14 @@ import co.edu.udistrital.user.controller.UserController;
 import co.edu.udistrital.user.repository.UserRepository;
 import co.edu.udistrital.user.service.UserService;
 
-@SpringBootApplication(scanBasePackageClasses = {
-	UserService.class, 
-	UserContactService.class, 
-	ResponseService.class, 
-	MessageService.class,
-	MessageRecipientService.class, 
-	FileSystemStorageService.class, 
-	EventService.class, 
-	UserContactController.class, 
-	UserController.class,
-	MessageController.class, 
-	User.class, 
-	UserContact.class, 
-	MessageRecipient.class,
-	EventController.class,
-	Event.class
-})
+@SpringBootApplication(scanBasePackageClasses = {UserService.class, UserContactService.class, ConversationService.class, ResponseService.class,
+	MessageService.class, FileSystemStorageService.class, EventService.class, UserContactController.class, UserController.class,
+	MessageController.class, User.class, UserContact.class, EventController.class, Event.class})
 
-@EnableMongoRepositories(basePackageClasses = {
-	UserRepository.class, 
-	UserContactRepository.class,
-	EventRepository.class})
+@EnableMongoRepositories(
+	basePackageClasses = {UserRepository.class, UserContactRepository.class, ConversationRepository.class, EventRepository.class})
+
+@EnableConfigurationProperties(StorageProperties.class)
 public class CommunicationApplication implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
@@ -97,6 +84,13 @@ public class CommunicationApplication implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(localeChangeInterceptor());
+	}
+
+	@Bean
+	CommandLineRunner init(StorageService storageService) {
+		return (args) -> {
+			storageService.init();
+		};
 	}
 
 }
