@@ -1,18 +1,29 @@
 package co.edu.udistrital.message.model;
 
+import java.util.Calendar;
+
 import org.springframework.data.annotation.Transient;
 import org.springframework.web.multipart.MultipartFile;
 
-import co.edu.udistrital.common.model.CoreEntity;
+import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.message.enums.MessageType;
+import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.User;
 
 
-public class Message extends CoreEntity {
+public class Message {
 
-	public Message() {}
+	private Calendar creationDate;
 
-	private MultipartFile multipartFile;
+	private Calendar updateDate;
+
+	private String creationUserId;
+
+	private String updateUserId;
+
+	private State state;
+
+	@Transient private MultipartFile multipartFile;
 
 	private String senderUserId;
 
@@ -90,6 +101,59 @@ public class Message extends CoreEntity {
 
 	public void setReceiverUserId(String receiverUserId) {
 		this.receiverUserId = receiverUserId;
+	}
+
+
+
+	public Calendar getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Calendar creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public Calendar getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Calendar updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public String getCreationUserId() {
+		return creationUserId;
+	}
+
+	public void setCreationUserId(String creationUserId) {
+		this.creationUserId = creationUserId;
+	}
+
+	public String getUpdateUserId() {
+		return updateUserId;
+	}
+
+	public void setUpdateUserId(String updateUserId) {
+		this.updateUserId = updateUserId;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public void addAuditInfo(boolean isNew, String userId) {
+		if (isNew) {
+			this.creationDate = DateUtil.getCurrentCalendar();
+			this.creationUserId = userId;
+			this.state = State.ACTIVE;
+		} else {
+			this.updateDate = DateUtil.getCurrentCalendar();
+			this.updateUserId = userId;
+		}
 	}
 
 }

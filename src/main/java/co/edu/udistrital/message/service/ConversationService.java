@@ -44,9 +44,14 @@ public class ConversationService {
 	}
 
 	public void sendMessage(Message message) {
-		Conversation conversation = findByBasicConversation(message.getSenderUser().getId(), message.getReceiverUser().getId());
-		conversation.getMessageList().add(message);
-		this.conversationRepository.save(conversation);
+		try {
+			Conversation conversation = findByBasicConversation(message.getSenderUser().getId(), message.getReceiverUser().getId());
+			conversation.getMessageList().add(message);
+			this.conversationRepository.save(conversation);	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public Response loadUserToUser(String userId, String contactUserId) {
@@ -54,8 +59,8 @@ public class ConversationService {
 		List<User> userList = this.userService.findByIdIn(Arrays.asList(userId, contactUserId));
 		if (!CollectionUtils.isEmpty(userList) && userList.size() >= 2) {
 			conversation.setUserList(new ArrayList<>(2));
-			conversation.getUserList().set(0, userList.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(new User()));
-			conversation.getUserList().set(1, userList.stream().filter(u -> u.getId().equals(contactUserId)).findFirst().orElse(new User()));
+			conversation.getUserList().add(userList.stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(new User()));
+			conversation.getUserList().add(userList.stream().filter(u -> u.getId().equals(contactUserId)).findFirst().orElse(new User()));
 		}
 		return this.responseService.successResponse(ConversationBundle.LOAD, ConversationBundle.SUCCESS_PTP_LOAD, conversation);
 	}

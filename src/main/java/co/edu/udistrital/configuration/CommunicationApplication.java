@@ -22,6 +22,7 @@ import co.edu.udistrital.contact.controller.UserContactController;
 import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.contact.repository.UserContactRepository;
 import co.edu.udistrital.contact.service.UserContactService;
+import co.edu.udistrital.core.controller.FileUploadController;
 import co.edu.udistrital.core.service.FileSystemStorageService;
 import co.edu.udistrital.core.service.StorageService;
 import co.edu.udistrital.event.controller.EventController;
@@ -40,7 +41,7 @@ import co.edu.udistrital.user.service.UserService;
 
 @SpringBootApplication(scanBasePackageClasses = {UserService.class, UserContactService.class, ConversationService.class, ResponseService.class,
 	MessageService.class, FileSystemStorageService.class, EventService.class, UserContactController.class, UserController.class,
-	MessageController.class, User.class, UserContact.class, EventController.class, Event.class})
+	MessageController.class, User.class, UserContact.class, EventController.class, Event.class, FileUploadController.class})
 
 @EnableMongoRepositories(
 	basePackageClasses = {UserRepository.class, UserContactRepository.class, ConversationRepository.class, EventRepository.class})

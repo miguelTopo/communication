@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import co.edu.udistrital.core.service.FileSystemStorageService;
+import co.edu.udistrital.common.util.ZyosCDNFTP;
+import co.edu.udistrital.common.util.ZyosCDNResource;
 import co.edu.udistrital.core.util.Bundle;
 import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.enums.MessageType;
 import co.edu.udistrital.message.model.Message;
-import co.edu.udistrital.message.repository.MessageRepository;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.model.User;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -23,19 +23,14 @@ import co.edu.udistrital.user.service.UserService;
 @Service
 public class MessageService {
 
-	private final MessageRepository messageRepository;
 	private final ResponseService responseService;
 	private final UserService userService;
 	private final ConversationService conversationService;
-	private final FileSystemStorageService fileSystemStorageService;
 
 	@Autowired
-	public MessageService(@Lazy MessageRepository messageRepository, @Lazy ResponseService responseService, @Lazy UserService userService,
-		@Lazy FileSystemStorageService fileSystemStorageService, @Lazy ConversationService conversationService) {
-		this.messageRepository = messageRepository;
+	public MessageService(@Lazy ResponseService responseService, @Lazy UserService userService, @Lazy ConversationService conversationService) {
 		this.responseService = responseService;
 		this.userService = userService;
-		this.fileSystemStorageService = fileSystemStorageService;
 		this.conversationService = conversationService;
 	}
 
@@ -63,7 +58,7 @@ public class MessageService {
 			break;
 			case AUDIO:
 			case VIDEO:
-				if (message.getFile() == null)
+				if (message.getMultipartFile() == null)
 					return responseService.warnResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_INVALID_FILE_TYPE);
 			break;
 			default:
@@ -72,15 +67,38 @@ public class MessageService {
 		return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, Bundle.CORE_SUCCESS_VALIDATION, true);
 	}
 
+	private ZyosCDNResource getBasicCDNResource() {
+		ZyosCDNResource resource = new ZyosCDNResource();
+		resource.setIdEnterprise(10L);
+		resource.setFunctionality("communication");
+		resource.setDocument(true);
+		return resource;
+	}
+
 
 	private Response sendAudioOrVideo(Message message) {
 		if (message == null)
 			return responseService.errorResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_INVALID_MESSAGE);
 		// Almacenando archivo en servidor Sprint
-		this.fileSystemStorageService.store(message.getMultipartFile());
-		message.setFile(message.getMultipartFile().getName());
-		sendMessage(message);
-		return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_SUCCESS_SEND, true);
+		try {
+			String fileName = message.getMultipartFile().getOriginalFilename();
+			// this.fileSystemStorageService.store(message.getMultipartFile());
+			//
+			// Resource springResource = this.fileSystemStorageService.loadAsResource(fileName);
+			// File file = springResource.getFile();
+			ZyosCDNResource resource = getBasicCDNResource();
+			String ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+			resource.setFileName(ZyosCDNFTP.getFileName(ext));
+			resource.setInputStream(message.getMultipartFile().getInputStream());
+			ZyosCDNFTP.uploadFileResource(resource);
+			message.setFile(ZyosCDNFTP.URI_HOST_MAIN + resource.getDatabasePath());
+			sendMessage(message);
+			return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_SUCCESS_SEND, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 
@@ -103,13 +121,17 @@ public class MessageService {
 	}
 
 	private void sendMessage(Message message) {
-		if (message == null)
-			return;
-		// Almacanenando en la colección Message, donde se insertan los mensajes
-		message.setSenderUserId(message.getSenderUser().getId());
-		message.setReceiverUserId(message.getReceiverUser().getId());
-		message.setCreationDate(DateUtil.getCurrentCalendar());
-		this.conversationService.sendMessage(message);
+		try {
+			if (message == null)
+				return;
+			// Almacanenando en la colección Message, donde se insertan los mensajes
+			message.setSenderUserId(message.getSenderUser().getId());
+			message.setReceiverUserId(message.getReceiverUser().getId());
+			message.setCreationDate(DateUtil.getCurrentCalendar());
+			this.conversationService.sendMessage(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Transactional

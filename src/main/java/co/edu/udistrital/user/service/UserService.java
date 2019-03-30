@@ -1,5 +1,8 @@
 package co.edu.udistrital.user.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +18,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.edu.udistrital.common.util.ZyosCDNFTP;
+import co.edu.udistrital.common.util.ZyosCDNResource;
 import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.contact.service.UserContactService;
 import co.edu.udistrital.core.service.FileSystemStorageService;
@@ -33,6 +38,7 @@ public class UserService {
 	private final UserContactService userContactService;
 	private final FileSystemStorageService fileSystemStorageService;
 	private final ResponseService responseService;
+	private static final String DEFAULT_USER_PROFILE = "https://miedificio.co/cdn/dev/resources/web/co/10/communication/default_user_profile.png";
 
 	@Autowired
 	public UserService(@Lazy UserRepository userRepository, @Lazy UserContactService userContactService,
@@ -169,11 +175,28 @@ public class UserService {
 		return userRegister(user, file);
 	}
 
+	private ZyosCDNResource getBasicCDNResource() {
+		ZyosCDNResource resource = new ZyosCDNResource();
+		resource.setIdEnterprise(10L);
+		resource.setFunctionality("communication");
+		resource.setDocument(true);
+		return resource;
+	}
+
 	private String uploadUserPhoto(MultipartFile file) {
 		if (file == null)
-			return "";
-		this.fileSystemStorageService.store(file);
-		return file.getOriginalFilename();
+			return DEFAULT_USER_PROFILE;
+		try {
+			ZyosCDNResource resource = getBasicCDNResource();
+			String ext = file.getName().substring(file.getName().lastIndexOf('.'), file.getName().length());
+			resource.setFileName(ZyosCDNFTP.getFileName(ext));
+			resource.setInputStream(file.getInputStream());
+			ZyosCDNFTP.uploadFileResource(resource);
+			return ZyosCDNFTP.URI_HOST_MAIN + resource.getDatabasePath();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return DEFAULT_USER_PROFILE;
+		}
 	}
 
 	private User userRegister(User user, MultipartFile file) {

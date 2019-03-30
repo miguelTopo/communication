@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import co.edu.udistrital.core.util.JsonUtil;
-import co.edu.udistrital.message.model.Message;
-import co.edu.udistrital.structure.model.LanPreference;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.model.User;
 import co.edu.udistrital.structure.service.ResponseService;

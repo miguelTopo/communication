@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.structure.api.AttrName;
 import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.User;
