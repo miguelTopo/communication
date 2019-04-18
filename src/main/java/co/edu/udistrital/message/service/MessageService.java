@@ -1,11 +1,14 @@
 package co.edu.udistrital.message.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import co.edu.udistrital.common.util.ZyosCDNFTP;
@@ -14,7 +17,9 @@ import co.edu.udistrital.core.util.Bundle;
 import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.enums.MessageType;
+import co.edu.udistrital.message.model.Conversation;
 import co.edu.udistrital.message.model.Message;
+import co.edu.udistrital.rest.message.model.MessageRest;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.model.User;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -145,38 +150,41 @@ public class MessageService {
 		return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_SUCCESS_SEND, true);
 	}
 
-	public Response loadTalk(String userId, String userContactId) {
-		// Response validUserTalk = validLoadTalk(userId, userContactId);
-		// if (!validUserTalk.isBooleanResponse())
-		// return validUserTalk;
-		// Message rootMessage = findMessageRoot(userId, userContactId);
-		// if (rootMessage == null)
-		// return responseService.successResponse(MessageBundle.MESSAGE_LOAD_TALK, "Los usuarios
-		// existen,
-		// pero
-		// no han iniciado una conversación",
-		// Collections.emptyList());
-		// List<MessageRecipient> messageList =
-		// messageRecipientService.findMessageTreeTalk(rootMessage.getId());
-		// System.out.println(messageList == null);
-		// return responseService.successResponse(MessageBundle.MESSAGE_LOAD_TALK, "Conversación cn
-		// datos",
-		// messageList );
-		return responseService.successResponse(MessageBundle.MESSAGE_TALK_LOAD, "Conversación con datos", Collections.emptyList());
+
+	private MessageRest getMessageRestFromMessage(Message message) {
+		if (message == null)
+			return null;
+		MessageRest mr = new MessageRest();
+		mr.setState(message.getState());
+		mr.setSenderUserId(message.getSenderUserId());
+		mr.setReceiverUserId(message.getReceiverUserId());
+		mr.setMessageBody(message.getMessageBody());
+		mr.setFile(message.getFile());
+		mr.setMessageType(message.getMessageType());
+		return mr;
 	}
 
-	private Response validLoadTalk(String userId, String userContactId) {
-		if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(userContactId))
-			return responseService.warnResponse(MessageBundle.MESSAGE_TALK_LOAD, MessageBundle.MESSAGE_TALK_INVALID_RECEIVED_OR_SENDER, false);
-
-		User user = userService.findById(userContactId);
-		if (user == null)
-			return responseService.warnResponse(MessageBundle.MESSAGE_TALK_LOAD, MessageBundle.MESSAGE_RECEIVER_NO_FOUND, false);
-		user = userService.findById(userId);
-		if (user == null)
-			return responseService.warnResponse(MessageBundle.MESSAGE_TALK_LOAD, MessageBundle.MESSAGE_SENDER_NO_FOUND, false);
-		return responseService.successResponse(MessageBundle.MESSAGE_TALK_LOAD, Bundle.CORE_SUCCESS_VALIDATION, true);
+	private List<MessageRest> parseToMessageList(List<Message> list) {
+		if (CollectionUtils.isEmpty(list))
+			return Collections.emptyList();
+		List<MessageRest> messageRestList = new ArrayList<>(list.size());
+		for (Message m : list)
+			messageRestList.add(getMessageRestFromMessage(m));
+		return messageRestList;
 	}
 
+	public int homeMessageCount(String homeUserId) {
+		return homeMessage(homeUserId).size();
+	}
+
+	public List<MessageRest> homeMessage(String homeUserId) {
+		List<Conversation> conversationList = conversationService.findByHomeUserId(homeUserId);
+		if (CollectionUtils.isEmpty(conversationList))
+			return Collections.emptyList();
+		List<MessageRest> messageRestList = new ArrayList<>(1);
+		for (Conversation c : conversationList)
+			messageRestList.addAll(parseToMessageList(c.getMessageList()));
+		return messageRestList;
+	}
 
 }

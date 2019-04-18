@@ -8,4 +8,6 @@ public interface ConversationRepositoryCustom {
 
 	Conversation findByBasicConversation(List<String> userIdList);
 
+	List<Conversation> findByHomeUserId(String homeUserId);
+
 }

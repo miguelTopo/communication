@@ -1,5 +1,6 @@
 package co.edu.udistrital.event.repository;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -16,5 +17,7 @@ public interface EventRepository extends MongoRepository<Event, String> {
 	@Nullable
 	@Async
 	List<Event> findByUserIdAndState(String userId, State state);
+
+	List<Event> findByUserIdAndDate(String userId, Calendar date);
 
 }

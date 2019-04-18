@@ -25,4 +25,9 @@ public class ConversationRepositoryImpl implements ConversationRepositoryCustom 
 		Query query = new Query(Criteria.where(AttrName.USER_ID_LIST).in(userIdList));
 		return mongoTemplate.findOne(query, Conversation.class);
 	}
+
+	public List<Conversation> findByHomeUserId(String homeUserId) {
+		Query query = new Query(Criteria.where(AttrName.USER_ID_LIST).in(Arrays.asList(homeUserId)));
+		return mongoTemplate.find(query, Conversation.class);
+	}
 }

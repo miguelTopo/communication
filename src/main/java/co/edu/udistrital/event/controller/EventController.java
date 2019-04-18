@@ -1,5 +1,9 @@
 package co.edu.udistrital.event.controller;
 
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -42,13 +46,20 @@ public class EventController {
 				.body(responseService.warnMessage("Consultar eventos", "Ocurrió un error, intente nuevamente o consulte al administrador"));
 		return eventService.findByUserIdAndState(userId);
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST, path = "/stateUpdate")
-	public ResponseEntity<Response> stateUpdate(@RequestBody Event event){
+	public ResponseEntity<Response> stateUpdate(@RequestBody Event event) {
 		if (event == null)
 			return ResponseEntity.ok()
 				.body(responseService.warnMessage("Registrar usuario", "Ocurrió un error, intente nuevamente o consulte al administrador"));
 		return this.eventService.stateUpdate(event);
 	}
-	
+
+	@RequestMapping(method = RequestMethod.POST, path = "/eventListByDate")
+	public List<Event> eventListByDate(@RequestParam("homeUserId") String homeUserId, @RequestParam("date") Calendar date) {
+		if (StringUtils.isEmpty(homeUserId) || date == null)
+			return Collections.emptyList();
+		return this.eventService.eventListByDate(homeUserId, date);
+	}
+
 }

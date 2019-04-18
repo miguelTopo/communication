@@ -47,11 +47,11 @@ public class ConversationService {
 		try {
 			Conversation conversation = findByBasicConversation(message.getSenderUser().getId(), message.getReceiverUser().getId());
 			conversation.getMessageList().add(message);
-			this.conversationRepository.save(conversation);	
+			this.conversationRepository.save(conversation);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public Response loadUserToUser(String userId, String contactUserId) {
@@ -63,6 +63,10 @@ public class ConversationService {
 			conversation.getUserList().add(userList.stream().filter(u -> u.getId().equals(contactUserId)).findFirst().orElse(new User()));
 		}
 		return this.responseService.successResponse(ConversationBundle.LOAD, ConversationBundle.SUCCESS_PTP_LOAD, conversation);
+	}
+
+	public List<Conversation> findByHomeUserId(String homeUserId) {
+		return conversationRepository.findByHomeUserId(homeUserId);
 	}
 
 }

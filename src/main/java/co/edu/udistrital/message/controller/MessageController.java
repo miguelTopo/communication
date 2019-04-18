@@ -1,5 +1,8 @@
 package co.edu.udistrital.message.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -16,8 +19,8 @@ import co.edu.udistrital.core.util.JsonUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.model.Message;
 import co.edu.udistrital.message.service.MessageService;
+import co.edu.udistrital.rest.message.model.MessageRest;
 import co.edu.udistrital.structure.model.Response;
-import co.edu.udistrital.structure.model.User;
 import co.edu.udistrital.structure.service.ResponseService;
 
 @RestController
@@ -31,6 +34,20 @@ public class MessageController {
 	public MessageController(MessageService messageService, ResponseService responseService) {
 		this.messageService = messageService;
 		this.responseService = responseService;
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/homeMessageCount")
+	public int homeMessageCount(@RequestParam("homeUserId") String homeUserId) {
+		if (StringUtils.isEmpty(homeUserId))
+			return 0;
+		return this.messageService.homeMessageCount(homeUserId);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/homeMessage")
+	public List<MessageRest> homeMessage(@RequestParam("homeUserId") String homeUserId) {
+		if (StringUtils.isEmpty(homeUserId))
+			return Collections.emptyList();
+		return this.messageService.homeMessage(homeUserId);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/sendText")
@@ -57,5 +74,7 @@ public class MessageController {
 		message.setMultipartFile(file);
 		return ResponseEntity.ok().body(this.messageService.sendVideo(message));
 	}
+
+
 
 }
