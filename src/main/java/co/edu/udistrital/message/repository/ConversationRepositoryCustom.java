@@ -10,4 +10,6 @@ public interface ConversationRepositoryCustom {
 
 	List<Conversation> findByHomeUserId(String homeUserId);
 
+	List<Conversation> findLastMessageList(String userId);
+
 }

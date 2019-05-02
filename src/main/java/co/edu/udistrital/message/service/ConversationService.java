@@ -2,12 +2,14 @@ package co.edu.udistrital.message.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import co.edu.udistrital.message.enums.ConversationBundle;
 import co.edu.udistrital.message.model.Conversation;
@@ -69,4 +71,16 @@ public class ConversationService {
 		return conversationRepository.findByHomeUserId(homeUserId);
 	}
 
+	public List<Conversation> findLastMessageList(String userId) {
+		if (StringUtils.isEmpty(userId))
+			return Collections.emptyList();
+		List<Conversation> cList = this.conversationRepository.findLastMessageList(userId);
+		return cList;
+	}
+
+	public void saveAll(List<Conversation> conversationList) {
+		if (CollectionUtils.isEmpty(conversationList))
+			return;
+		this.conversationRepository.saveAll(conversationList);
+	}
 }

@@ -3,7 +3,10 @@ package co.edu.udistrital.message.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import org.springframework.util.StringUtils;
 import co.edu.udistrital.common.util.ZyosCDNFTP;
 import co.edu.udistrital.common.util.ZyosCDNResource;
 import co.edu.udistrital.core.util.Bundle;
+import co.edu.udistrital.core.util.CoreConst;
 import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.enums.MessageType;
@@ -37,6 +41,7 @@ public class MessageService {
 		this.responseService = responseService;
 		this.userService = userService;
 		this.conversationService = conversationService;
+
 	}
 
 
@@ -150,41 +155,92 @@ public class MessageService {
 		return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_SUCCESS_SEND, true);
 	}
 
+	private char getMessageTpeForResponse(MessageType mt) {
+		if (mt.equals(MessageType.AUDIO))
+			return 'a';
+		if (mt.equals(MessageType.BRAILLE))
+			return 'b';
+		if (mt.equals(MessageType.VIDEO))
+			return 'v';
+		return 't';
+	}
 
-	private MessageRest getMessageRestFromMessage(Message message) {
+
+
+	private MessageRest getMessageRestFromMessage(Message message, User user) {
 		if (message == null)
 			return null;
 		MessageRest mr = new MessageRest();
-		mr.setState(message.getState());
-		mr.setSenderUserId(message.getSenderUserId());
-		mr.setReceiverUserId(message.getReceiverUserId());
-		mr.setMessageBody(message.getMessageBody());
-		mr.setFile(message.getFile());
-		mr.setMessageType(message.getMessageType());
+		mr.setM(message.getMessageBody());
+		mr.setU(user.getName());
+//		mr.setH(DateUtil.datedDate(message.getCreationDate()));
+		mr.setF(StringUtils.isEmpty(message.getFile()) ? "not"
+			: message.getFile().substring(message.getFile().lastIndexOf('/') + 1, message.getFile().length()));
+		mr.setMt(getMessageTpeForResponse(message.getMessageType()));
 		return mr;
 	}
 
-	private List<MessageRest> parseToMessageList(List<Message> list) {
-		if (CollectionUtils.isEmpty(list))
-			return Collections.emptyList();
-		List<MessageRest> messageRestList = new ArrayList<>(list.size());
-		for (Message m : list)
-			messageRestList.add(getMessageRestFromMessage(m));
-		return messageRestList;
+	private MessageRest parseToMessageRest(Message message) {
+		if (message == null)
+			return new MessageRest();
+		User user = this.userService.findById(message.getSenderUserId());
+		return getMessageRestFromMessage(message, user);
 	}
 
-	public int homeMessageCount(String homeUserId) {
-		return homeMessage(homeUserId).size();
-	}
+	// private List<MessageRest> parseToMessageRest(List<Message> messageList) {
+	// if (CollectionUtils.isEmpty(messageList))
+	// return Collections.emptyList();
+	// List<String> userIdList = messageList.stream().map(m ->
+	// m.getSenderUserId()).collect(Collectors.toList());
+	// List<User> userList = this.userService.findByIdIn(userIdList);
+	// List<MessageRest> messageRestList = new ArrayList<>(messageList.size());
+	// User user = null;
+	// for (Message m : messageList) {
+	// user = userList.stream().filter(u ->
+	// u.getId().equals(m.getSenderUserId())).findFirst().orElse(new User());
+	// messageRestList.add(getMessageRestFromMessage(m, user));
+	// }
+	// return messageRestList;
+	// }
 
-	public List<MessageRest> homeMessage(String homeUserId) {
+
+	/*
+	 * public List<MessageRest> homeMessage(String homeUserId) { List<Conversation> conversationList
+	 * = conversationService.findByHomeUserId(homeUserId); if
+	 * (CollectionUtils.isEmpty(conversationList)) return Collections.emptyList(); List<Message>
+	 * messageList = null;
+	 * 
+	 * for (Conversation c : conversationList) { for (Message m : c.getMessageList()) { if
+	 * (CollectionUtils.isEmpty(m.getReadUserIdList()) ||
+	 * !m.getReadUserIdList().contains(homeUserId)) { if (messageList == null) messageList = new
+	 * ArrayList<>(1); messageList.add(m); } } } return parseToMessageRest(messageList); }
+	 */
+
+	public MessageRest homeMessage(String homeUserId) {
 		List<Conversation> conversationList = conversationService.findByHomeUserId(homeUserId);
 		if (CollectionUtils.isEmpty(conversationList))
-			return Collections.emptyList();
-		List<MessageRest> messageRestList = new ArrayList<>(1);
-		for (Conversation c : conversationList)
-			messageRestList.addAll(parseToMessageList(c.getMessageList()));
-		return messageRestList;
+			return new MessageRest();
+		MessageRest messageRest = null;
+		Message firstUnreadMessage = null;
+
+		label: for (Conversation c : conversationList) {
+			if (CollectionUtils.isEmpty(c.getMessageList()))
+				continue;
+			for (Message m : c.getMessageList()) {
+				if (CollectionUtils.isEmpty(m.getReadUserIdList()) || !m.getReadUserIdList().contains(homeUserId)) {
+					if (m.getReadUserIdList() == null)
+						m.setReadUserIdList(new ArrayList<>(1));
+					m.getReadUserIdList().add(homeUserId);
+					firstUnreadMessage = m;
+					break label;
+				}
+			}
+		}
+		if (firstUnreadMessage != null) {
+			messageRest = parseToMessageRest(firstUnreadMessage);
+			this.conversationService.saveAll(conversationList);
+		}
+		return messageRest;
 	}
 
 }

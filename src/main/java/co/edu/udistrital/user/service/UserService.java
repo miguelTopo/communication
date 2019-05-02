@@ -20,6 +20,7 @@ import co.edu.udistrital.common.util.ZyosCDNResource;
 import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.contact.service.UserContactService;
 import co.edu.udistrital.core.service.FileSystemStorageService;
+import co.edu.udistrital.core.util.CoreConst;
 import co.edu.udistrital.core.util.JsonUtil;
 import co.edu.udistrital.structure.enums.Role;
 import co.edu.udistrital.structure.enums.State;
@@ -33,16 +34,13 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final UserContactService userContactService;
-	private final FileSystemStorageService fileSystemStorageService;
 	private final ResponseService responseService;
 	private static final String DEFAULT_USER_PROFILE = "https://miedificio.co/cdn/dev/resources/web/co/10/communication/default_user_profile.png";
 
 	@Autowired
-	public UserService(@Lazy UserRepository userRepository, @Lazy UserContactService userContactService,
-		@Lazy FileSystemStorageService fileSystemStorageService, @Lazy ResponseService responseService) {
+	public UserService(@Lazy UserRepository userRepository, @Lazy UserContactService userContactService, @Lazy ResponseService responseService) {
 		this.userRepository = userRepository;
 		this.userContactService = userContactService;
-		this.fileSystemStorageService = fileSystemStorageService;
 		this.responseService = responseService;
 	}
 
@@ -231,6 +229,13 @@ public class UserService {
 		userRepository.save(userUpdate);
 		return ResponseEntity.ok().body(responseService.successResponse("Actualizar preferencias", "Las preferencias se actualizaron correctamente",
 			user.getUserLangPreferences()));
+	}
+
+	public String getUserLanPreferece(String userId) {
+		if (StringUtils.isEmpty(userId))
+			return CoreConst.STRING_EMPTY;
+		User user = userRepository.findById(userId).orElse(new User());
+		return !StringUtils.isEmpty(user.getLangPreferences()) ? user.getLangPreferences() : CoreConst.STRING_EMPTY;
 	}
 
 

@@ -36,19 +36,21 @@ public class MessageController {
 		this.responseService = responseService;
 	}
 
-	@RequestMapping(method = RequestMethod.POST, path = "/homeMessageCount")
-	public int homeMessageCount(@RequestParam("homeUserId") String homeUserId) {
-		if (StringUtils.isEmpty(homeUserId))
-			return 0;
-		return this.messageService.homeMessageCount(homeUserId);
-	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/homeMessage")
-	public List<MessageRest> homeMessage(@RequestParam("homeUserId") String homeUserId) {
+	public MessageRest homeMessage(@RequestParam("homeUserId") String homeUserId) {
 		if (StringUtils.isEmpty(homeUserId))
-			return Collections.emptyList();
+			return new MessageRest();
 		return this.messageService.homeMessage(homeUserId);
 	}
+
+
+	/*
+	 * @RequestMapping(method = RequestMethod.POST, path = "/homeMessage") public List<MessageRest>
+	 * homeMessage(@RequestParam("homeUserId") String homeUserId) { if
+	 * (StringUtils.isEmpty(homeUserId)) return Collections.emptyList(); return
+	 * this.messageService.homeMessage(homeUserId); }
+	 */
 
 	@RequestMapping(method = RequestMethod.POST, path = "/sendText")
 	public ResponseEntity<Response> sendText(@RequestBody Message message) {
@@ -74,7 +76,6 @@ public class MessageController {
 		message.setMultipartFile(file);
 		return ResponseEntity.ok().body(this.messageService.sendVideo(message));
 	}
-
-
-
 }
+
+

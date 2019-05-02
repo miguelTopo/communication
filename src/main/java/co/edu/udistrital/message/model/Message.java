@@ -1,6 +1,7 @@
 package co.edu.udistrital.message.model;
 
 import java.util.Calendar;
+import java.util.List;
 
 import org.springframework.data.annotation.Transient;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,9 @@ public class Message {
 	private String messageBody;
 
 	private String file;
+
+	private List<String> readUserIdList;
+
 
 	@Transient private User senderUser;
 
@@ -103,8 +107,6 @@ public class Message {
 		this.receiverUserId = receiverUserId;
 	}
 
-
-
 	public Calendar getCreationDate() {
 		return creationDate;
 	}
@@ -145,6 +147,14 @@ public class Message {
 		this.state = state;
 	}
 
+	public List<String> getReadUserIdList() {
+		return readUserIdList;
+	}
+
+	public void setReadUserIdList(List<String> readUserIdList) {
+		this.readUserIdList = readUserIdList;
+	}
+
 	public void addAuditInfo(boolean isNew, String userId) {
 		if (isNew) {
 			this.creationDate = DateUtil.getCurrentCalendar();
@@ -155,5 +165,6 @@ public class Message {
 			this.updateUserId = userId;
 		}
 	}
+
 
 }

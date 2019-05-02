@@ -2,70 +2,47 @@ package co.edu.udistrital.rest.message.model;
 
 import java.io.Serializable;
 
-import co.edu.udistrital.message.enums.MessageType;
-import co.edu.udistrital.structure.enums.State;
-
 public class MessageRest implements Serializable {
 
-	private State state;
 
-	private String senderUserId;
+	private String m;
 
-	private String receiverUserId;
+	private String u;
 
-	private String messageBody;
+	private String f;
 
-	private String file;
+	private char mt;
 
-	private MessageType messageType;
-
-
-	public String getMessageBody() {
-		return messageBody;
+	public String getM() {
+		return m;
 	}
 
-	public void setMessageBody(String messageBody) {
-		this.messageBody = messageBody;
+	public void setM(String m) {
+		this.m = m;
 	}
 
-	public String getFile() {
-		return file;
+	public String getU() {
+		return u;
 	}
 
-	public void setFile(String file) {
-		this.file = file;
+	public void setU(String u) {
+		this.u = u;
 	}
 
-	public String getSenderUserId() {
-		return senderUserId;
+	public String getF() {
+		return f;
 	}
 
-	public void setSenderUserId(String senderUserId) {
-		this.senderUserId = senderUserId;
+	public void setF(String f) {
+		this.f = f;
 	}
 
-	public String getReceiverUserId() {
-		return receiverUserId;
+	public char getMt() {
+		return mt;
 	}
 
-	public void setReceiverUserId(String receiverUserId) {
-		this.receiverUserId = receiverUserId;
-	}
-
-	public State getState() {
-		return state;
-	}
-
-	public void setState(State state) {
-		this.state = state;
-	}
-
-	public MessageType getMessageType() {
-		return messageType;
-	}
-
-	public void setMessageType(MessageType messageType) {
-		this.messageType = messageType;
+	public void setMt(char mt) {
+		this.mt = mt;
 	}
 
 }

@@ -33,22 +33,18 @@ import co.edu.udistrital.message.controller.MessageController;
 import co.edu.udistrital.message.repository.ConversationRepository;
 import co.edu.udistrital.message.service.ConversationService;
 import co.edu.udistrital.message.service.MessageService;
-import co.edu.udistrital.structure.controller.UserLangPeferencesController;
 import co.edu.udistrital.structure.model.User;
-import co.edu.udistrital.structure.repository.UserLangPeferencesRepository;
 import co.edu.udistrital.structure.service.ResponseService;
-import co.edu.udistrital.structure.service.UserLangPeferencesService;
 import co.edu.udistrital.user.controller.UserController;
 import co.edu.udistrital.user.repository.UserRepository;
 import co.edu.udistrital.user.service.UserService;
 
 @SpringBootApplication(scanBasePackageClasses = {UserService.class, UserContactService.class, ConversationService.class, ResponseService.class,
-	MessageService.class, FileSystemStorageService.class, EventService.class, UserLangPeferencesService.class, UserContactController.class,
-	UserController.class, MessageController.class, User.class, UserContact.class, EventController.class, Event.class, FileUploadController.class,
-	UserLangPeferencesController.class})
+	MessageService.class, FileSystemStorageService.class, EventService.class, UserContactController.class, UserController.class,
+	MessageController.class, User.class, UserContact.class, EventController.class, Event.class, FileUploadController.class})
 
-@EnableMongoRepositories(basePackageClasses = {UserRepository.class, UserContactRepository.class, ConversationRepository.class, EventRepository.class,
-	UserLangPeferencesRepository.class})
+@EnableMongoRepositories(
+	basePackageClasses = {UserRepository.class, UserContactRepository.class, ConversationRepository.class, EventRepository.class})
 
 @EnableConfigurationProperties(StorageProperties.class)
 public class CommunicationApplication implements WebMvcConfigurer {

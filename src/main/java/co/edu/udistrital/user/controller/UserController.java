@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import co.edu.udistrital.core.util.CoreConst;
 import co.edu.udistrital.core.util.JsonUtil;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.model.User;
@@ -39,13 +40,20 @@ public class UserController {
 		String message = userInDb ? "El usuario existe en la base de datos" : "El usuario NO existe en la base de datos";
 		return ResponseEntity.ok().body(responseService.successResponse("Usuario", message, userInDb));
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST, path = "/updateLanPreferece")
-	public ResponseEntity<Response> updateLanPreferece( @RequestBody User user){
-		if(user==null)
-			return ResponseEntity.ok().body(responseService.errorResponse("Actualizar preferencias",
-				"Ocurrió un error, intente nuevamente o consulte al administrador", false));
-		return userService.updateLanPreferece(user);			
+	public ResponseEntity<Response> updateLanPreferece(@RequestBody User user) {
+		if (user == null)
+			return ResponseEntity.ok().body(
+				responseService.errorResponse("Actualizar preferencias", "Ocurrió un error, intente nuevamente o consulte al administrador", false));
+		return userService.updateLanPreferece(user);
+	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/userLanPreferece")
+	public String getUserLanPreferece(@RequestParam("userId") String userId) {
+		if (StringUtils.isEmpty(userId))
+			return CoreConst.STRING_EMPTY;
+		return userService.getUserLanPreferece(userId);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, path = "/userSingleRegister")
@@ -64,7 +72,7 @@ public class UserController {
 		User user = (User) JsonUtil.asObject(jsonData, User.class);
 		return userSingleRegister(user, file);
 	}
-	
+
 	private ResponseEntity<Response> userSingleRegister(User user, MultipartFile file) {
 		if (user == null)
 			return ResponseEntity.ok()

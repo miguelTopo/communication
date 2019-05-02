@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import com.mongodb.BasicDBObject;
+
 import co.edu.udistrital.message.model.Conversation;
 import co.edu.udistrital.structure.api.AttrName;
 
@@ -26,8 +28,16 @@ public class ConversationRepositoryImpl implements ConversationRepositoryCustom 
 		return mongoTemplate.findOne(query, Conversation.class);
 	}
 
+	@Override
 	public List<Conversation> findByHomeUserId(String homeUserId) {
 		Query query = new Query(Criteria.where(AttrName.USER_ID_LIST).in(Arrays.asList(homeUserId)));
 		return mongoTemplate.find(query, Conversation.class);
 	}
+
+	@Override
+	public List<Conversation> findLastMessageList(String userId) {
+		Query query = new Query(Criteria.where(AttrName.USER_ID_LIST).all(Arrays.asList(userId)));
+		return mongoTemplate.find(query, Conversation.class);
+	}
+
 }
