@@ -1,6 +1,5 @@
 package co.edu.udistrital.message.repository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
-import com.mongodb.BasicDBObject;
 
 import co.edu.udistrital.message.model.Conversation;
 import co.edu.udistrital.structure.api.AttrName;
@@ -25,7 +22,7 @@ public class ConversationRepositoryImpl implements ConversationRepositoryCustom 
 
 	@Override
 	public Conversation findByBasicConversation(List<String> userIdList) {
-		Query query = new Query(Criteria.where(AttrName.USER_ID_LIST).in(userIdList));
+		Query query = new Query(Criteria.where(AttrName.USER_ID_LIST).all(userIdList));
 		return mongoTemplate.findOne(query, Conversation.class);
 	}
 

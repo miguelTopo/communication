@@ -13,5 +13,5 @@ public interface UserRepositoryCustom {
 	List<User> loadByMobilePhoneIn(List<String> mobilePhones);
 
 	List<User> findByIdIn(List<String> idList);
-
+	
 }

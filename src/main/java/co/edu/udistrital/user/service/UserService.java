@@ -67,6 +67,7 @@ public class UserService {
 	public List<User> findByIdIn(List<String> userIdList) {
 		return userRepository.findByIdIn(userIdList);
 	}
+	
 
 	/**
 	 * Permite consultar un usuario activo por medio del teléfono celular
