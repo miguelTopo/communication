@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.springframework.util.StringUtils;
+
 import co.edu.udistrital.common.constant.IZyosConstantParameter;
+import co.edu.udistrital.common.util.ZyosCDNFTP;
 import it.sauronsoftware.ftp4j.FTPClient;
 import it.sauronsoftware.ftp4j.FTPDataTransferListener;
 import it.sauronsoftware.ftp4j.FTPException;
@@ -279,6 +282,25 @@ public class ZyosFTP {
 		return false;
 	}
 
+	public File downloadFile(String remotePath) throws Exception {
+		try {
+			if (StringUtils.isEmpty(remotePath))
+				return null;
+			File localDir = new File(ZyosCDNFTP.LOCAL_PATH);
+			if (!localDir.exists())
+				localDir.mkdirs();
+			String fileName = remotePath.substring(remotePath.lastIndexOf('/') + 1, remotePath.length());
+			File localFile = new File(ZyosCDNFTP.LOCAL_PATH + fileName);
+			client.download(remotePath, localFile);
+			if (!localFile.exists())
+				System.out.println(
+					"WARN- An error occurred in the ZyosFTP downloadFile method when trying to drop a file. Validate the relative route or the destination route");
+			return localFile;
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	/**
 	 * <p>
 	 * Class that listens for transaction events, opening and closing FTP server. Currently only
@@ -351,5 +373,7 @@ public class ZyosFTP {
 			System.out.println("TRANSFER-STATUS: File transfer failed...");
 		}
 	}
+
+
 
 }

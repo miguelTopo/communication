@@ -11,16 +11,37 @@ import co.edu.udistrital.structure.model.User;
 @Document(collection = "UserContact")
 public class UserContact {
 
+	/** Id único de la base de datis */
 	@Id @Indexed private String id;
 
+	/**
+	 * Permite almacenar la infoemación del objeto User de la persona dueña de la libreta de
+	 * direcciones
+	 */
 	@Transient private User user;
 
+	/** Almacena el id del usuario dueño de la libreta de direcciones */
 	@Indexed private String userId;
 
+	/**
+	 * Almacena el id del usuario que figura como contacto de la persona dueña de la libreta de
+	 * direcciones
+	 */
+	@Indexed private String userContactId;
+
+	/** Permite almacenar la información del último mensaje enviado a un contacto */
 	@Transient private String lastMessage;
 
+	/**
+	 * Permite almacenar la información del la fecha-hora cuando ocurrió el mensaje enviado a un
+	 * contacto
+	 */
 	@Transient private String lastMessageHour;
 
+	/**
+	 * Especifica el nombre personalizado qe tiene un contacto para el dueño de la libreta de
+	 * direcciones
+	 */
 	private String customName;
 
 	public String getId() {
@@ -72,15 +93,23 @@ public class UserContact {
 		this.lastMessageHour = lastMessageHour;
 	}
 
+	public String getUserContactId() {
+		return userContactId;
+	}
+
+	public void setUserContactId(String userContactId) {
+		this.userContactId = userContactId;
+	}
+
 	public UserContactRest getUserContactRest() {
 		UserContactRest ucr = new UserContactRest();
 		ucr.setId(this.id);
 		ucr.setCustomName(this.customName);
 		ucr.setUser(this.user);
 		ucr.setUserId(this.userId);
+		ucr.setUserContactId(this.userContactId);
 		ucr.setLastMessage(this.lastMessage);
 		ucr.setLastMessageHour(this.lastMessageHour);
 		return ucr;
 	}
-
 }

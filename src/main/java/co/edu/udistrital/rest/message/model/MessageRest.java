@@ -4,14 +4,16 @@ import java.io.Serializable;
 
 public class MessageRest implements Serializable {
 
-
 	private String m;
 
 	private String u;
 
 	private String f;
 
+	private String hour;
+
 	private char mt;
+	
 
 	public String getM() {
 		return m;
@@ -44,5 +46,15 @@ public class MessageRest implements Serializable {
 	public void setMt(char mt) {
 		this.mt = mt;
 	}
+
+	public String getHour() {
+		return hour;
+	}
+
+	public void setHour(String hour) {
+		this.hour = hour;
+	}
+	
+
 
 }

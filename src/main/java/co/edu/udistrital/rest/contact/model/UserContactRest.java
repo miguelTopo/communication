@@ -8,7 +8,11 @@ public class UserContactRest {
 
 	private User user;
 
+	private User userContact;
+
 	private String userId;
+
+	private String userContactId;
 
 	private String customName;
 
@@ -40,6 +44,14 @@ public class UserContactRest {
 		this.user = user;
 	}
 
+	public User getUserContact() {
+		return userContact;
+	}
+
+	public void setUserContact(User userContact) {
+		this.userContact = userContact;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
@@ -62,5 +74,13 @@ public class UserContactRest {
 
 	public void setLastMessage(String lastMessage) {
 		this.lastMessage = lastMessage;
+	}
+
+	public String getUserContactId() {
+		return userContactId;
+	}
+
+	public void setUserContactId(String userContactId) {
+		this.userContactId = userContactId;
 	}
 }

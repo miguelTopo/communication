@@ -1,12 +1,8 @@
 package co.edu.udistrital.message.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -17,7 +13,6 @@ import org.springframework.util.StringUtils;
 import co.edu.udistrital.common.util.ZyosCDNFTP;
 import co.edu.udistrital.common.util.ZyosCDNResource;
 import co.edu.udistrital.core.util.Bundle;
-import co.edu.udistrital.core.util.CoreConst;
 import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.enums.MessageType;
@@ -43,7 +38,6 @@ public class MessageService {
 		this.conversationService = conversationService;
 
 	}
-
 
 	private Response validMessage(Message message) {
 		if (message == null)
@@ -173,7 +167,7 @@ public class MessageService {
 		MessageRest mr = new MessageRest();
 		mr.setM(message.getMessageBody());
 		mr.setU(user.getName());
-//		mr.setH(DateUtil.datedDate(message.getCreationDate()));
+		mr.setHour(DateUtil.datedDate(message.getCreationDate()));
 		mr.setF(StringUtils.isEmpty(message.getFile()) ? "not"
 			: message.getFile().substring(message.getFile().lastIndexOf('/') + 1, message.getFile().length()));
 		mr.setMt(getMessageTpeForResponse(message.getMessageType()));

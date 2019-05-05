@@ -24,7 +24,7 @@ public class UserController {
 
 	private final UserService userService;
 	private final ResponseService responseService;
-
+	
 	@Autowired
 	public UserController(UserService userService, ResponseService responseService) {
 		this.userService = userService;

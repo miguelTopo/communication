@@ -117,6 +117,7 @@ public class UserService {
 	public List<User> loadByMobilePhoneActiveState(List<String> mobilePhoneList) {
 		if (CollectionUtils.isEmpty(mobilePhoneList))
 			return Collections.emptyList();
+		
 		return this.userRepository.loadByMobilePhoneActiveState(mobilePhoneList);
 	}
 
@@ -129,7 +130,7 @@ public class UserService {
 		if (mobilePhoneList == null || mobilePhoneList.isEmpty())
 			return Collections.emptyList();
 
-		// Inicializar listadopara almacenamiento de los mismos
+		// Inicializar listado para almacenamiento de los mismos
 		List<UserContact> userListToAdd = new ArrayList<>(1);
 		// Usuarios existentes en la base de datos que coinciden con los teléfonos de contacto del
 		// usuario
@@ -139,7 +140,10 @@ public class UserService {
 			Optional<UserContact> userContactOptional = null;
 			for (User u : contactExistList) {
 				uc = new UserContact();
-				uc.setUserId(u.getId());
+				// Este valor almacena el id del dueño de la libreta de direcciones
+				uc.setUserId(user.getId());
+				// este valor almacena el id del contacto que se desea almacenar
+				uc.setUserContactId(u.getId());
 				userContactOptional = user.getUserContactList().stream()
 					.filter(item -> item.getUser().getMobilePhone().trim().equalsIgnoreCase(u.getMobilePhone())).findFirst();
 				if (userContactOptional.isPresent())
@@ -198,6 +202,13 @@ public class UserService {
 		if (user == null)
 			return null;
 
+		/** INICIO GUARDAR USUARIO */
+		user.setPhoto(uploadUserPhoto(file));
+		user.setState(State.ACTIVE);
+		save(user);
+		/** FIN GUARDAR USUARIO */
+
+		/** INICIO GUARDAR CONTACTOS DE USUARIO, COMPARANDO LOS EXISTENTES EN LA BASE DE DATOS */
 		List<String> userContactIdList = null;
 		List<UserContact> userListToAdd = null;
 		if (!CollectionUtils.isEmpty(user.getUserContactList())) {
@@ -207,12 +218,14 @@ public class UserService {
 				userContactIdList = userListToAdd.stream().map(UserContact::getId).collect(Collectors.toList());
 			}
 		}
-		user.setUserContactList(null);
-		if (!CollectionUtils.isEmpty(userContactIdList))
+		/** FIN GUARDAR CONTACTOS DE USUARIO */
+
+		// Si en el proceso se almacenaron contactos es necesario guardar nuevamente el objeto
+		// usuario para guardar los usuarios que se anexaron
+		if (!CollectionUtils.isEmpty(userContactIdList)) {
 			user.setUserContactIdList(userContactIdList);
-		user.setPhoto(uploadUserPhoto(file));
-		user.setState(State.ACTIVE);
-		save(user);
+			save(user);
+		}
 		return user;
 	}
 

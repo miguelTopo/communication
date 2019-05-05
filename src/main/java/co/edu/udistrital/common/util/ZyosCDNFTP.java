@@ -38,6 +38,7 @@ public class ZyosCDNFTP {
 	private static final String FTP_CDN_USER = "desarrollo@miedificio.co";
 	private static final String FTP_CDN_PASSWORD = "Zyos123.";
 	private static final String FTP_CDN_PORT = "21";
+	public static final String LOCAL_PATH = "upload-dir/";
 	public static final String URI_HOST_MAIN = "https://miedificio.co/cdn/dev/resources/web/";
 
 	/**
@@ -460,6 +461,22 @@ public class ZyosCDNFTP {
 				+ SEPARATOR;
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	public static File downloadResource(String remotePath) throws Exception {
+		try {
+			if (StringUtils.isEmpty(remotePath))
+				return null;
+			String fileName = remotePath.substring(remotePath.lastIndexOf('/') + 1, remotePath.length());
+			File localFile = new File(ZyosCDNFTP.LOCAL_PATH + fileName);
+			if (localFile.exists() && localFile.canRead())
+				return localFile;
+			ZyosFTP ftp = new ZyosFTP(getCDNFTPProperties());
+			ftp.openConnection();
+			return ftp.downloadFile(ROOT_RESOURCES + SEPARATOR + WEB + SEPARATOR + remotePath);
+		} catch (Exception e) {
 			throw e;
 		}
 	}

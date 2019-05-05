@@ -1,5 +1,6 @@
 package co.edu.udistrital.user.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -20,5 +21,7 @@ public interface UserRepository extends MongoRepository<User, String>, UserRepos
 	@Nullable
 	@Async
 	Optional<User> findByMobilePhoneOrEmailAndState(String mobilePhone, String email, State state);
+	
+	List<User> findByMobilePhone(List<String> mobileList);
 
 }

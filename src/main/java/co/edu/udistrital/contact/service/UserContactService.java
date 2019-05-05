@@ -61,9 +61,21 @@ public class UserContactService {
 		return true;
 	}
 
+	private List<String> getMissingMobilePhoneByContactList(List<String> currentMobileList, List<UserContact> userContactList) {
+		if (CollectionUtils.isEmpty(userContactList))
+			return Collections.emptyList();
+		List<String> missingMobileList = new ArrayList<>(1);
+		for (UserContact uc : userContactList) {
+			if (uc.getUser() != null && !currentMobileList.contains(uc.getUser().getMobilePhone()))
+				missingMobileList.add(uc.getUser().getMobilePhone());
+		}
+		return missingMobileList;
+	}
+
 	public List<UserContactRest> findContactListByUser(User user) {
-		// Buscando los números celular del usuario que solicita los contactos
+		// Buscando usuario que solicita listado de cotactos
 		User userResponse = this.userService.findByMobilePhoneActive(user.getMobilePhone());
+		user.setId(userResponse.getId());
 
 		List<String> currentContactMobileList = null;
 		// Se asigna a la variable currentContactMobileList el listado de usuarios que ya pertenecen
@@ -83,9 +95,8 @@ public class UserContactService {
 		if (CollectionUtils.isEmpty(currentMobileList))
 			missingContactList = user.getUserContactList().stream().map(UserContact::getUser).map(User::getMobilePhone).collect(Collectors.toList());
 		else
-			missingContactList =
-				user.getUserContactList().stream().filter(uc -> uc.getUser() != null && !currentMobileList.contains(uc.getUser().getMobilePhone()))
-					.map(UserContact::getUser).map(User::getMobilePhone).collect(Collectors.toList());
+			missingContactList = getMissingMobilePhoneByContactList(currentMobileList, user.getUserContactList());
+
 
 		// En la variable userToAdd se almacenan los registros de usuarios que existen en la base de
 		// datos, pero no existe en la libreta de contactos del usuario, para asociaros, mediante la
@@ -93,7 +104,7 @@ public class UserContactService {
 		List<User> userToAdd =
 			!CollectionUtils.isEmpty(missingContactList) ? userService.loadByMobilePhoneActiveState(missingContactList) : Collections.emptyList();
 		if (!CollectionUtils.isEmpty(userToAdd)) {
-			List<UserContact> userContactToAdd = buildUserContactFromUser(userToAdd, user.getUserContactList());
+			List<UserContact> userContactToAdd = buildUserContactFromUser(userToAdd, user);
 			saveAll(userContactToAdd);
 			if (CollectionUtils.isEmpty(userResponse.getUserContactIdList()))
 				userResponse.setUserContactIdList(new ArrayList<>(userContactToAdd.size()));
@@ -124,19 +135,20 @@ public class UserContactService {
 	}
 
 	private void addUserAndLastMessage(String userId, List<UserContact> userContactList, boolean loadLastMessage) {
-		List<User> userList = userService.findByIdIn(userContactList.stream().map(UserContact::getUserId).collect(Collectors.toList()));
+		List<User> userList = userService.findByIdIn(userContactList.stream().map(UserContact::getUserContactId).collect(Collectors.toList()));
 		List<Conversation> conversationList = loadLastMessage ? this.conversationService.findLastMessageList(userId) : Collections.emptyList();
 		User contact = null;
 		Conversation conversation = null;
 		Message message = null;
 		for (UserContact uc : userContactList) {
-			contact = userList.stream().filter(u -> u.getId().equals(uc.getUserId())).findFirst().orElse(new User());
+			contact = userList.stream().filter(u -> u.getId().equals(uc.getUserContactId())).findFirst().orElse(new User());
 			uc.setUser(contact);
 			if (loadLastMessage && !StringUtils.isEmpty(contact.getId()) && !userId.equals(contact.getId())) {
 				final String id = contact.getId();
 				conversation = conversationList.stream().filter(c -> c.getUserIdList().contains(id)).findFirst().orElse(null);
 				if (conversation != null) {
-					message = CollectionUtils.isEmpty(conversation.getMessageList()) ? new Message() : conversation.getMessageList().get(0);
+					message = CollectionUtils.isEmpty(conversation.getMessageList()) ? new Message()
+						: conversation.getMessageList().get(conversation.getMessageList().size() - 1);
 					uc.setLastMessage(message.getMessageBody());
 					uc.setLastMessageHour(DateUtil.datedDate(message.getCreationDate()));
 				}
@@ -146,15 +158,18 @@ public class UserContactService {
 
 
 
-	private List<UserContact> buildUserContactFromUser(List<User> userList, List<UserContact> customizeContactList) {
+	private List<UserContact> buildUserContactFromUser(List<User> userList, User user) {
 		if (CollectionUtils.isEmpty(userList))
 			return Collections.emptyList();
+		List<UserContact> customizeContactList =
+			CollectionUtils.isEmpty(user.getUserContactList()) ? Collections.emptyList() : user.getUserContactList();
 		List<UserContact> userContactList = new ArrayList<>(userList.size());
 		UserContact uc = null;
 		Optional<UserContact> optionalUserContact = null;
 		for (User u : userList) {
 			uc = new UserContact();
-			uc.setUserId(u.getId());
+			uc.setUserId(user.getId());
+			uc.setUserContactId(u.getId());
 			optionalUserContact =
 				customizeContactList.stream().filter(contact -> contact.getUser().getMobilePhone().equalsIgnoreCase(u.getMobilePhone())).findFirst();
 			uc.setCustomName(optionalUserContact.isPresent() ? optionalUserContact.get().getCustomName() : "");
