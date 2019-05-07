@@ -18,7 +18,7 @@ import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.enums.MessageType;
 import co.edu.udistrital.message.model.Conversation;
 import co.edu.udistrital.message.model.Message;
-import co.edu.udistrital.rest.message.model.MessageRest;
+import co.edu.udistrital.rest.message.model.MessageResponse;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.model.User;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -161,10 +161,10 @@ public class MessageService {
 
 
 
-	private MessageRest getMessageRestFromMessage(Message message, User user) {
+	private MessageResponse getMessageRestFromMessage(Message message, User user) {
 		if (message == null)
 			return null;
-		MessageRest mr = new MessageRest();
+		MessageResponse mr = new MessageResponse();
 		mr.setM(message.getMessageBody());
 		mr.setU(user.getName());
 		mr.setHour(DateUtil.datedDate(message.getCreationDate()));
@@ -174,9 +174,9 @@ public class MessageService {
 		return mr;
 	}
 
-	private MessageRest parseToMessageRest(Message message) {
+	private MessageResponse parseToMessageRest(Message message) {
 		if (message == null)
-			return new MessageRest();
+			return new MessageResponse();
 		User user = this.userService.findById(message.getSenderUserId());
 		return getMessageRestFromMessage(message, user);
 	}
@@ -210,11 +210,11 @@ public class MessageService {
 	 * ArrayList<>(1); messageList.add(m); } } } return parseToMessageRest(messageList); }
 	 */
 
-	public MessageRest homeMessage(String homeUserId) {
+	public MessageResponse homeMessage(String homeUserId) {
 		List<Conversation> conversationList = conversationService.findByHomeUserId(homeUserId);
 		if (CollectionUtils.isEmpty(conversationList))
-			return new MessageRest();
-		MessageRest messageRest = null;
+			return new MessageResponse();
+		MessageResponse messageRest = null;
 		Message firstUnreadMessage = null;
 
 		label: for (Conversation c : conversationList) {

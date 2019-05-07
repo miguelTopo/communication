@@ -2,7 +2,13 @@ package co.edu.udistrital.rest.message.model;
 
 import java.io.Serializable;
 
-public class MessageRest implements Serializable {
+import co.edu.udistrital.rest.enums.ResponseType;
+
+public class MessageResponse implements Serializable {
+
+	public MessageResponse() {
+		this.rt = ResponseType.MSG;
+	}
 
 	private String m;
 
@@ -12,8 +18,10 @@ public class MessageRest implements Serializable {
 
 	private String hour;
 
+	private ResponseType rt;
+
 	private char mt;
-	
+
 
 	public String getM() {
 		return m;
@@ -54,7 +62,13 @@ public class MessageRest implements Serializable {
 	public void setHour(String hour) {
 		this.hour = hour;
 	}
-	
 
+	public ResponseType getRt() {
+		return rt;
+	}
+
+	public void setRt(ResponseType rt) {
+		this.rt = rt;
+	}
 
 }

@@ -61,12 +61,13 @@ public class UserContactService {
 		return true;
 	}
 
-	private List<String> getMissingMobilePhoneByContactList(List<String> currentMobileList, List<UserContact> userContactList) {
+	private List<String> getMissingMobilePhoneByContactList(String userPhone, List<String> currentMobileList, List<UserContact> userContactList) {
 		if (CollectionUtils.isEmpty(userContactList))
 			return Collections.emptyList();
 		List<String> missingMobileList = new ArrayList<>(1);
 		for (UserContact uc : userContactList) {
-			if (uc.getUser() != null && !currentMobileList.contains(uc.getUser().getMobilePhone()))
+			if (uc.getUser() != null && !currentMobileList.contains(uc.getUser().getMobilePhone())
+				&& !userPhone.equals(uc.getUser().getMobilePhone()))
 				missingMobileList.add(uc.getUser().getMobilePhone());
 		}
 		return missingMobileList;
@@ -93,10 +94,10 @@ public class UserContactService {
 		List<String> missingContactList = null;
 		final List<String> currentMobileList = currentContactMobileList;
 		if (CollectionUtils.isEmpty(currentMobileList))
-			missingContactList = user.getUserContactList().stream().map(UserContact::getUser).map(User::getMobilePhone).collect(Collectors.toList());
+			missingContactList = user.getUserContactList().stream().map(UserContact::getUser).map(User::getMobilePhone)
+				.filter(phone -> !phone.equals(userResponse.getMobilePhone())).collect(Collectors.toList());
 		else
-			missingContactList = getMissingMobilePhoneByContactList(currentMobileList, user.getUserContactList());
-
+			missingContactList = getMissingMobilePhoneByContactList(userResponse.getMobilePhone(), currentMobileList, user.getUserContactList());
 
 		// En la variable userToAdd se almacenan los registros de usuarios que existen en la base de
 		// datos, pero no existe en la libreta de contactos del usuario, para asociaros, mediante la

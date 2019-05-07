@@ -16,7 +16,7 @@ import co.edu.udistrital.core.util.JsonUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.model.Message;
 import co.edu.udistrital.message.service.MessageService;
-import co.edu.udistrital.rest.message.model.MessageRest;
+import co.edu.udistrital.rest.message.model.MessageResponse;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.service.ResponseService;
 
@@ -35,9 +35,9 @@ public class MessageController {
 
 
 	@RequestMapping(method = RequestMethod.POST, path = "/homeMessage")
-	public MessageRest homeMessage(@RequestParam("homeUserId") String homeUserId) {
+	public MessageResponse homeMessage(@RequestParam("homeUserId") String homeUserId) {
 		if (StringUtils.isEmpty(homeUserId))
-			return new MessageRest();
+			return new MessageResponse();
 		return this.messageService.homeMessage(homeUserId);
 	}
 

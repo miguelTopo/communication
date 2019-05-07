@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.event.model.Event;
 import co.edu.udistrital.event.service.EventService;
+import co.edu.udistrital.rest.event.model.EventResponse;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.service.ResponseService;
 
@@ -61,5 +63,13 @@ public class EventController {
 			return Collections.emptyList();
 		return this.eventService.eventListByDate(homeUserId, date);
 	}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/byHour")
+	public EventResponse getByCurrentHour(@RequestParam("homeUserId") String homeUserId) {
+		if (StringUtils.isEmpty(homeUserId))
+			return null;
+		return this.eventService.getByCurrentHour(homeUserId, DateUtil.getCurrentCalendar());
+	}
+
 
 }

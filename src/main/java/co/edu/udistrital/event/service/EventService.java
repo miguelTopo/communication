@@ -2,8 +2,10 @@ package co.edu.udistrital.event.service;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -16,10 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.event.enums.EventReiterativeType;
 import co.edu.udistrital.event.enums.EventType;
 import co.edu.udistrital.event.model.Event;
 import co.edu.udistrital.event.repository.EventRepository;
+import co.edu.udistrital.rest.event.model.EventResponse;
 import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -132,27 +136,42 @@ public class EventService {
 		}
 	}
 
-	public List<Event> eventListByDate(String homeUserId, Calendar date) {
-		List<Event> eventList = this.eventRepository.findByUserIdAndDate(homeUserId, date);
-		if (CollectionUtils.isEmpty(eventList))
-			return Collections.emptyList();
+	private EventResponse parseToEventResponse(Event ev) {
+		if (ev == null)
+			return null;
+		EventResponse eResponse = new EventResponse();
+		eResponse.setDesc(ev.getDescription());
+		eResponse.setDate(DateUtil.getTime(ev.getDate()));
+		return eResponse;
+	}
 
+
+	public EventResponse getByCurrentHour(String homeUserId, Calendar calendar) {
+		List<Event> eventList = eventListByDate(homeUserId, calendar, true);
+		return CollectionUtils.isEmpty(eventList) ? new EventResponse() : parseToEventResponse(eventList.get(0));
+	}
+
+
+	public List<Event> eventListByDate(String homeUserId, Calendar date) {
+		return eventListByDate(homeUserId, date, false);
+	}
+
+	private List<Event> getEventBySpecificDateOrReiterativeEveryDay(Calendar date, List<Event> eventList) {
 		List<EventReiterativeType> reiterativeTypeList = new ArrayList<>();
 		reiterativeTypeList.add(EventReiterativeType.EVERY_DAY);
 		reiterativeTypeList.add(EventReiterativeType.ANNUALY);
 
 		Predicate<Event> specficDate =
-			e -> e.getEventType().equals(EventType.SPECIFIC_DATE) && e.getDate().get(Calendar.HOUR_OF_DAY) == date.get(Calendar.HOUR_OF_DAY)
-				&& e.getDate().get(Calendar.MINUTE) == date.get(Calendar.MINUTE);
-		Predicate<Event> reiterativeEveryDate = e -> e.getEventType().equals(EventType.REITERATIVE)
-			&& reiterativeTypeList.contains(e.getEventReiterativeType()) && e.getDate().get(Calendar.HOUR_OF_DAY) == date.get(Calendar.HOUR_OF_DAY)
-			&& e.getDate().get(Calendar.MINUTE) == date.get(Calendar.MINUTE);
-		
-		List<Event> eventListResponse = new ArrayList<>(1);
-		// Eventos que aplican por ser del día actual y la hora actual
-		eventListResponse.addAll(eventList.stream().filter(specficDate.or(reiterativeEveryDate)).collect(Collectors.toList()));
+			e -> e.getEventType().equals(EventType.SPECIFIC_DATE) && DateUtil.getTime(e.getDate()).equals(DateUtil.getTime(date));
 
+		Predicate<Event> reiterativeEveryDate = e -> e.getEventType().equals(EventType.REITERATIVE)
+			&& reiterativeTypeList.contains(e.getEventReiterativeType()) && DateUtil.getTime(e.getDate()).equals(DateUtil.getTime(date));
+		return eventList.stream().filter(specficDate.or(reiterativeEveryDate)).collect(Collectors.toList());
+	}
+
+	private List<Event> getEventByReiterativeType(Calendar date, List<Event> eventList, boolean returnFirst) {
 		List<Event> reiterativeList = eventList.stream().filter(e -> e.getEventType().equals(EventType.REITERATIVE)).collect(Collectors.toList());
+		List<Event> eventListResponse = new ArrayList<>(1);
 		boolean addToList = false;
 		for (Event e : reiterativeList) {
 			addToList = false;
@@ -165,9 +184,31 @@ public class EventService {
 			else if (e.getEventReiterativeType().equals(EventReiterativeType.WEEKLY))
 				addToList = validAddWeeklyEvent(e, date);
 
-			if (addToList)
-				eventListResponse.add(e);
+			if (addToList) {
+				if (returnFirst)
+					return Arrays.asList(e);
+				else
+					eventListResponse.add(e);
+			}
+
 		}
+		return eventListResponse;
+	}
+
+	private List<Event> eventListByDate(String homeUserId, Calendar date, boolean returnFirst) {
+		List<Event> eventList = this.eventRepository.findByUserIdAndState(homeUserId, State.ACTIVE);
+		if (CollectionUtils.isEmpty(eventList))
+			return Collections.emptyList();
+
+		eventList = eventList.stream().sorted(Comparator.comparing(Event::getDate)).collect(Collectors.toList());
+
+		// Eventos que aplican por ser del día actual y la hora actual
+		List<Event> eventListResponse = new ArrayList<>(1);
+		eventListResponse.addAll(getEventBySpecificDateOrReiterativeEveryDay(date, eventList));
+		if (!CollectionUtils.isEmpty(eventListResponse) && returnFirst)
+			return Arrays.asList(eventListResponse.get(0));
+
+		eventListResponse.addAll(getEventByReiterativeType(date, eventList, returnFirst));
 		return eventListResponse;
 	}
 
@@ -176,31 +217,28 @@ public class EventService {
 	private boolean validAddWeeklyEvent(Event e, Calendar date) {
 		if (e == null || date == null)
 			return false;
-		return date.get(Calendar.HOUR_OF_DAY) == e.getDate().get(Calendar.HOUR_OF_DAY)
-			&& date.get(Calendar.MINUTE) == e.getDate().get(Calendar.MINUTE)
-			&& date.get(Calendar.DAY_OF_WEEK) == e.getDate().get(Calendar.DAY_OF_WEEK);
+		return DateUtil.getTime(e.getDate()).equals(DateUtil.getTime(date)) && e.getRememberDays().contains(date.get(Calendar.DAY_OF_WEEK));
 	}
 
 	private boolean validAddSpecificDaysEvent(Event e, Calendar date) {
 		if (e == null || date == null || CollectionUtils.isEmpty(e.getRememberDays()))
 			return false;
-		return date.get(Calendar.HOUR_OF_DAY) == e.getDate().get(Calendar.HOUR_OF_DAY)
-			&& date.get(Calendar.MINUTE) == e.getDate().get(Calendar.MINUTE) && e.getRememberDays().contains(date.get(Calendar.DAY_OF_WEEK));
+		return DateUtil.getTime(date).equals(DateUtil.getTime(e.getDate())) && e.getRememberDays().contains(date.get(Calendar.DAY_OF_WEEK));
 	}
 
 	private boolean validAddMonthlyEvent(Event e, Calendar date) {
 		if (e == null || date == null)
 			return false;
-		return date.get(Calendar.HOUR_OF_DAY) == e.getDate().get(Calendar.HOUR_OF_DAY)
-			&& date.get(Calendar.MINUTE) == e.getDate().get(Calendar.MINUTE)
+		return DateUtil.getTime(e.getDate()).equals(DateUtil.getTime(date))
 			&& date.get(Calendar.DAY_OF_MONTH) == e.getDate().get(Calendar.DAY_OF_MONTH);
 	}
 
 	private boolean validAddHourlyEvent(Event e, Calendar date) {
 		if (e == null || date == null)
 			return false;
-		return date.get(Calendar.HOUR_OF_DAY) >= e.getDate().get(Calendar.HOUR_OF_DAY)
-			&& date.get(Calendar.MINUTE) == e.getDate().get(Calendar.MINUTE);
+		return date.get(Calendar.MINUTE) == e.getDate().get(Calendar.MINUTE);
 	}
+
+
 
 }

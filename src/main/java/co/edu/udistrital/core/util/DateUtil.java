@@ -24,7 +24,7 @@ public class DateUtil {
 		return formatCalendar(calendar, HH24_MM);
 	}
 
-	private static String formatCalendar(Calendar calendar, String pattern) {
+	public static String formatCalendar(Calendar calendar, String pattern) {
 		if (calendar == null)
 			return "";
 		SimpleDateFormat format = new SimpleDateFormat(pattern);
@@ -54,5 +54,6 @@ public class DateUtil {
 			return "Hoy: " + getTime(calendar);
 		return getShortDayName(calendar) + " " + calendar.get(Calendar.DAY_OF_MONTH) + " " + getShortMonthName(calendar) +" " + getTime(calendar);
 	}
+	
 
 }
