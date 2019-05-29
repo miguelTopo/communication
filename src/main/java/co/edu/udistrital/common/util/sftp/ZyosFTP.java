@@ -297,6 +297,7 @@ public class ZyosFTP {
 					"WARN- An error occurred in the ZyosFTP downloadFile method when trying to drop a file. Validate the relative route or the destination route");
 			return localFile;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw e;
 		}
 	}

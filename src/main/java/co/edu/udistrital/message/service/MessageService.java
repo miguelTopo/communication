@@ -71,16 +71,8 @@ public class MessageService {
 		return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, Bundle.CORE_SUCCESS_VALIDATION, true);
 	}
 
-	private ZyosCDNResource getBasicCDNResource() {
-		ZyosCDNResource resource = new ZyosCDNResource();
-		resource.setIdEnterprise(10L);
-		resource.setFunctionality("communication");
-		resource.setDocument(true);
-		return resource;
-	}
 
-
-	private Response sendAudioOrVideo(Message message) {
+	private Response sendAudioOrVideoOrTts(Message message) {
 		if (message == null)
 			return responseService.errorResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_INVALID_MESSAGE);
 		// Almacenando archivo en servidor Sprint
@@ -90,7 +82,7 @@ public class MessageService {
 			//
 			// Resource springResource = this.fileSystemStorageService.loadAsResource(fileName);
 			// File file = springResource.getFile();
-			ZyosCDNResource resource = getBasicCDNResource();
+			ZyosCDNResource resource = ZyosCDNResource.getDefaultCDNResource();
 			String ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
 			resource.setFileName(ZyosCDNFTP.getFileName(ext));
 			resource.setInputStream(message.getMultipartFile().getInputStream());
@@ -112,7 +104,7 @@ public class MessageService {
 		Response validMessage = validMessage(message);
 		if (!validMessage.isBooleanResponse())
 			return validMessage;
-		return sendAudioOrVideo(message);
+		return sendAudioOrVideoOrTts(message);
 	}
 
 	@Transactional
@@ -121,21 +113,7 @@ public class MessageService {
 		Response validMessage = validMessage(message);
 		if (!validMessage.isBooleanResponse())
 			return validMessage;
-		return sendAudioOrVideo(message);
-	}
-
-	private void sendMessage(Message message) {
-		try {
-			if (message == null)
-				return;
-			// Almacanenando en la colección Message, donde se insertan los mensajes
-			message.setSenderUserId(message.getSenderUser().getId());
-			message.setReceiverUserId(message.getReceiverUser().getId());
-			message.setCreationDate(DateUtil.getCurrentCalendar());
-			this.conversationService.sendMessage(message);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		return sendAudioOrVideoOrTts(message);
 	}
 
 	@Transactional
@@ -145,9 +123,24 @@ public class MessageService {
 		if (!validMessage.isBooleanResponse())
 			return validMessage;
 
-		sendMessage(message);
-		return responseService.successResponse(MessageBundle.MESSAGE_SEND_MESSAGE, MessageBundle.MESSAGE_SUCCESS_SEND, true);
+		return sendAudioOrVideoOrTts(message);
 	}
+
+	private void sendMessage(Message message) {
+		try {
+			if (message == null)
+				return;
+			// Almacenando en la colección Message, donde se insertan los mensajes
+			message.setSenderUserId(message.getSenderUser().getId());
+			message.setReceiverUserId(message.getReceiverUser().getId());
+			message.setCreationDate(DateUtil.getCurrentCalendar());
+			this.conversationService.sendMessage(message);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
 
 	private char getMessageTpeForResponse(MessageType mt) {
 		if (mt.equals(MessageType.AUDIO))

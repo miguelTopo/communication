@@ -271,6 +271,14 @@ public class ZyosCDNResource {
 	public void setDocument(boolean isDocument) {
 		this.isDocument = isDocument;
 	}
+	
+	public static ZyosCDNResource getDefaultCDNResource() {
+		ZyosCDNResource resource = new ZyosCDNResource();
+		resource.setIdEnterprise(10L);
+		resource.setFunctionality("communication");
+		resource.setDocument(true);
+		return resource;
+	}
 
 
 

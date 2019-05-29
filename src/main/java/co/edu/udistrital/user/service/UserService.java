@@ -67,7 +67,7 @@ public class UserService {
 	public List<User> findByIdIn(List<String> userIdList) {
 		return userRepository.findByIdIn(userIdList);
 	}
-	
+
 
 	/**
 	 * Permite consultar un usuario activo por medio del teléfono celular
@@ -118,7 +118,7 @@ public class UserService {
 	public List<User> loadByMobilePhoneActiveState(List<String> mobilePhoneList) {
 		if (CollectionUtils.isEmpty(mobilePhoneList))
 			return Collections.emptyList();
-		
+
 		return this.userRepository.loadByMobilePhoneActiveState(mobilePhoneList);
 	}
 
@@ -127,7 +127,8 @@ public class UserService {
 			return Collections.emptyList();
 
 		// Obtener el listado de teléfonos que envia el usuario de su libreta de contactos
-		List<String> mobilePhoneList = user.getUserContactList().stream().map(u -> u.getUser().getMobilePhone()).collect(Collectors.toList());
+		List<String> mobilePhoneList = user.getUserContactList().stream().map(u -> u.getUser().getMobilePhone())
+			.filter(m -> !m.equals(user.getMobilePhone())).collect(Collectors.toList());
 		if (mobilePhoneList == null || mobilePhoneList.isEmpty())
 			return Collections.emptyList();
 

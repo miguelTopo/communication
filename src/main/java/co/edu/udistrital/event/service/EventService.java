@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import co.edu.udistrital.common.util.ZyosCDNFTP;
+import co.edu.udistrital.common.util.ZyosCDNResource;
 import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.event.enums.EventReiterativeType;
 import co.edu.udistrital.event.enums.EventType;
@@ -107,10 +109,25 @@ public class EventService {
 		if (validEvent.isBooleanResponse()) {
 			event.setActive(true);
 			event.setState(State.ACTIVE);
+			saveEventTtsFile(event);
 			this.eventRepository.save(event);
 			return ResponseEntity.ok().body(responseService.successMessage("Guardar mensaje", "Perfecto! ya agregaste tu recordatorio"));
 		}
 		return ResponseEntity.ok().body(validEvent);
+	}
+
+	private void saveEventTtsFile(Event event) {
+		try {
+			String fileName = event.getMultipartFile().getOriginalFilename();
+			ZyosCDNResource resource = ZyosCDNResource.getDefaultCDNResource();
+			String ext = fileName.substring(fileName.lastIndexOf('.'), fileName.length());
+			resource.setFileName(ZyosCDNFTP.getFileName(ext));
+			resource.setInputStream(event.getMultipartFile().getInputStream());
+			ZyosCDNFTP.uploadFileResource(resource);
+			event.setFile(ZyosCDNFTP.URI_HOST_MAIN + resource.getDatabasePath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public ResponseEntity<Response> findByUserIdAndState(String userId) {
@@ -141,14 +158,22 @@ public class EventService {
 			return null;
 		EventResponse eResponse = new EventResponse();
 		eResponse.setDesc(ev.getDescription());
+		eResponse.setF(ev.getFile());
 		eResponse.setDate(DateUtil.getTime(ev.getDate()));
 		return eResponse;
 	}
 
 
 	public EventResponse getByCurrentHour(String homeUserId, Calendar calendar) {
-		List<Event> eventList = eventListByDate(homeUserId, calendar, true);
-		return CollectionUtils.isEmpty(eventList) ? new EventResponse() : parseToEventResponse(eventList.get(0));
+		Event e = new Event();
+		Calendar evCal = Calendar.getInstance();
+		evCal.setTime(calendar.getTime());
+		e.setDate(evCal);
+		e.setDescription("Este es un evento muy simple para notificación");
+		e.setFile("NOne");
+		return parseToEventResponse(e);
+//		List<Event> eventList = eventListByDate(homeUserId, calendar, true);
+//		return CollectionUtils.isEmpty(eventList) ? new EventResponse() : parseToEventResponse(eventList.get(0));
 	}
 
 

@@ -9,6 +9,8 @@ public class EventResponse {
 	}
 
 	private String date;
+	
+	private String f;
 
 	private String desc;
 
@@ -37,5 +39,14 @@ public class EventResponse {
 	public void setRt(ResponseType rt) {
 		this.rt = rt;
 	}
+
+	public String getF() {
+		return f;
+	}
+
+	public void setF(String f) {
+		this.f = f;
+	}
+	
 
 }

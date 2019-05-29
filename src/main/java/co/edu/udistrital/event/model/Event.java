@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -29,6 +30,8 @@ public class Event implements Serializable {
 
 	private String description;
 
+	private String file;
+
 	private State state;
 
 	private EventReiterativeType eventReiterativeType;
@@ -36,6 +39,8 @@ public class Event implements Serializable {
 	private List<Integer> rememberDays;
 
 	@Transient private User user;
+
+	@Transient private MultipartFile multipartFile;
 
 	public String getId() {
 		return id;
@@ -117,5 +122,20 @@ public class Event implements Serializable {
 		this.active = active;
 	}
 
+	public MultipartFile getMultipartFile() {
+		return multipartFile;
+	}
+
+	public void setMultipartFile(MultipartFile multipartFile) {
+		this.multipartFile = multipartFile;
+	}
+
+	public String getFile() {
+		return file;
+	}
+
+	public void setFile(String file) {
+		this.file = file;
+	}
 
 }

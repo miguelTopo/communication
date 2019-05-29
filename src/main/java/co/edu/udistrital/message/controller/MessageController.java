@@ -36,6 +36,7 @@ public class MessageController {
 
 	@RequestMapping(method = RequestMethod.POST, path = "/homeMessage")
 	public MessageResponse homeMessage(@RequestParam("homeUserId") String homeUserId) {
+		System.out.println("Estamos consultando mensajes para el usuario");
 		if (StringUtils.isEmpty(homeUserId))
 			return new MessageResponse();
 		return this.messageService.homeMessage(homeUserId);
@@ -49,10 +50,19 @@ public class MessageController {
 	 * this.messageService.homeMessage(homeUserId); }
 	 */
 
-	@RequestMapping(method = RequestMethod.POST, path = "/sendText")
-	public ResponseEntity<Response> sendText(@RequestBody Message message) {
+	@RequestMapping(method = RequestMethod.POST, path = "/sendText2")
+	public ResponseEntity<Response> sendText2(@RequestBody Message message) {
 		if (message == null)
 			return ResponseEntity.ok().body(responseService.warnMessage(MessageBundle.MESSAGE_SEND_MESSAGE, Bundle.CORE_EROR_RESPONSE));
+		return ResponseEntity.ok().body(this.messageService.sendTextMessage(message));
+	}
+
+	@PostMapping(value = "/sendText", consumes = "multipart/form-data")
+	public ResponseEntity<Response> sendText(@RequestParam("file") MultipartFile file, @RequestParam("jsonData") String jsonData) {
+		if (file == null || StringUtils.isEmpty(jsonData))
+			return ResponseEntity.ok().body(responseService.warnMessage(MessageBundle.MESSAGE_SEND_MESSAGE, Bundle.CORE_EROR_RESPONSE));
+		Message message = (Message) JsonUtil.asObject(jsonData, Message.class);
+		message.setMultipartFile(file);
 		return ResponseEntity.ok().body(this.messageService.sendTextMessage(message));
 	}
 

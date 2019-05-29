@@ -18,6 +18,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import com.mongodb.MongoClient;
 
+import co.edu.udistrital.common.util.controller.ManageFileController;
 import co.edu.udistrital.contact.controller.UserContactController;
 import co.edu.udistrital.contact.model.UserContact;
 import co.edu.udistrital.contact.repository.UserContactRepository;
@@ -41,7 +42,7 @@ import co.edu.udistrital.user.service.UserService;
 
 @SpringBootApplication(scanBasePackageClasses = {UserService.class, UserContactService.class, ConversationService.class, ResponseService.class,
 	MessageService.class, FileSystemStorageService.class, EventService.class, UserContactController.class, UserController.class,
-	MessageController.class, User.class, UserContact.class, EventController.class, Event.class, FileUploadController.class})
+	MessageController.class, User.class, UserContact.class, EventController.class, Event.class, FileUploadController.class, ManageFileController.class})
 
 @EnableMongoRepositories(
 	basePackageClasses = {UserRepository.class, UserContactRepository.class, ConversationRepository.class, EventRepository.class})
