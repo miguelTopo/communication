@@ -1,18 +1,11 @@
 package co.edu.udistrital.common.util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import co.edu.udistrital.common.constant.IZyosConstantParameter;

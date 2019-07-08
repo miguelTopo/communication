@@ -1,7 +1,6 @@
 package co.edu.udistrital.event.controller;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.junit.Test;
 

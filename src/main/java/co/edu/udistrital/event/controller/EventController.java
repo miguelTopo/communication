@@ -19,7 +19,7 @@ import co.edu.udistrital.core.util.DateUtil;
 import co.edu.udistrital.core.util.JsonUtil;
 import co.edu.udistrital.event.model.Event;
 import co.edu.udistrital.event.service.EventService;
-import co.edu.udistrital.rest.event.model.EventResponse;
+import co.edu.udistrital.rest.message.model.MessageResponse;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.service.ResponseService;
 
@@ -69,13 +69,12 @@ public class EventController {
 		return this.eventService.eventListByDate(homeUserId, date);
 	}
 
-	@RequestMapping(method = RequestMethod.POST, path = "/byHour")
-	public EventResponse getByCurrentHour(@RequestParam("homeUserId") String homeUserId) {
+	@RequestMapping(method = RequestMethod.POST, path = "/byCurrentHour")
+	public MessageResponse getByCurrentHour(@RequestParam("homeUserId") String homeUserId) {
 		if (StringUtils.isEmpty(homeUserId))
 			return null;
-		
 		Calendar cal = DateUtil.getCurrentCalendar();
-//		System.out.println("Vamos a buscar eventos para: " + DateUtil.datedDate(cal));
+		System.out.println("Vamos a buscar eventos para: " + DateUtil.datedDate(cal));
 		return this.eventService.getByCurrentHour(homeUserId, cal);
 	}
 

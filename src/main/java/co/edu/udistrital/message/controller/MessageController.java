@@ -16,6 +16,7 @@ import co.edu.udistrital.core.util.JsonUtil;
 import co.edu.udistrital.message.enums.MessageBundle;
 import co.edu.udistrital.message.model.Message;
 import co.edu.udistrital.message.service.MessageService;
+import co.edu.udistrital.rest.enums.ResponseType;
 import co.edu.udistrital.rest.message.model.MessageResponse;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -38,7 +39,7 @@ public class MessageController {
 	public MessageResponse homeMessage(@RequestParam("homeUserId") String homeUserId) {
 		System.out.println("Estamos consultando mensajes para el usuario");
 		if (StringUtils.isEmpty(homeUserId))
-			return new MessageResponse();
+			return new MessageResponse(ResponseType.MSG);
 		return this.messageService.homeMessage(homeUserId);
 	}
 

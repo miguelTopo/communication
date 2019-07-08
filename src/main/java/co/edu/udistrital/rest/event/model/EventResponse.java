@@ -1,20 +1,24 @@
 package co.edu.udistrital.rest.event.model;
 
-import co.edu.udistrital.rest.enums.ResponseType;
+import java.io.Serializable;
+import java.util.List;
 
-public class EventResponse {
+import co.edu.udistrital.rest.enums.ResponseType;
+import co.edu.udistrital.rest.message.model.DFPlayerItemResponse;
+
+public class EventResponse implements Serializable {
 
 	public EventResponse() {
 		this.rt = ResponseType.EVENT;
 	}
 
 	private String date;
-	
-	private String f;
 
 	private String desc;
 
 	private ResponseType rt;
+
+	private List<DFPlayerItemResponse> df;
 
 	public String getDate() {
 		return date;
@@ -40,13 +44,12 @@ public class EventResponse {
 		this.rt = rt;
 	}
 
-	public String getF() {
-		return f;
+	public List<DFPlayerItemResponse> getDf() {
+		return df;
 	}
 
-	public void setF(String f) {
-		this.f = f;
+	public void setDf(List<DFPlayerItemResponse> df) {
+		this.df = df;
 	}
-	
 
 }

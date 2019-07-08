@@ -40,9 +40,11 @@ import co.edu.udistrital.user.controller.UserController;
 import co.edu.udistrital.user.repository.UserRepository;
 import co.edu.udistrital.user.service.UserService;
 
-@SpringBootApplication(scanBasePackageClasses = {UserService.class, UserContactService.class, ConversationService.class, ResponseService.class,
-	MessageService.class, FileSystemStorageService.class, EventService.class, UserContactController.class, UserController.class,
-	MessageController.class, User.class, UserContact.class, EventController.class, Event.class, FileUploadController.class, ManageFileController.class})
+
+@SpringBootApplication(
+	scanBasePackageClasses = {UserService.class, UserContactService.class, ConversationService.class, ResponseService.class, MessageService.class,
+		FileSystemStorageService.class, EventService.class, UserContactController.class, UserController.class, MessageController.class, User.class,
+		UserContact.class, EventController.class, Event.class, FileUploadController.class, ManageFileController.class})
 
 @EnableMongoRepositories(
 	basePackageClasses = {UserRepository.class, UserContactRepository.class, ConversationRepository.class, EventRepository.class})
@@ -54,8 +56,15 @@ public class CommunicationApplication implements WebMvcConfigurer {
 		SpringApplication.run(CommunicationApplication.class, args);
 	}
 
+
 	@Bean
 	public MongoClient mongoClient() {
+		//Configuración para server en la nube
+		/*
+		 * MongoClientURI uri = new MongoClientURI(
+		 * "mongodb+srv://admin:wcgyxJEDWyMZ7njE@communication-3an3e.mongodb.net/test?retryWrites=true&w=majority"
+		 * ); return new MongoClient(uri);
+		 */
 		return new MongoClient("localhost");
 	}
 

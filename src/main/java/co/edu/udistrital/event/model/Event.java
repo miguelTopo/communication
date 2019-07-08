@@ -30,8 +30,6 @@ public class Event implements Serializable {
 
 	private String description;
 
-	private String file;
-
 	private State state;
 
 	private EventReiterativeType eventReiterativeType;
@@ -128,14 +126,6 @@ public class Event implements Serializable {
 
 	public void setMultipartFile(MultipartFile multipartFile) {
 		this.multipartFile = multipartFile;
-	}
-
-	public String getFile() {
-		return file;
-	}
-
-	public void setFile(String file) {
-		this.file = file;
 	}
 
 }

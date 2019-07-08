@@ -1,20 +1,19 @@
 package co.edu.udistrital.rest.message.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import co.edu.udistrital.rest.enums.ResponseType;
 
 public class MessageResponse implements Serializable {
 
-	public MessageResponse() {
-		this.rt = ResponseType.MSG;
+	public MessageResponse(ResponseType rt) {
+		this.rt = rt;
 	}
 
 	private String m;
 
 	private String u;
-
-	private String f;
 
 	private String hour;
 
@@ -22,6 +21,7 @@ public class MessageResponse implements Serializable {
 
 	private char mt;
 
+	private List<DFPlayerItemResponse> df;
 
 	public String getM() {
 		return m;
@@ -37,14 +37,6 @@ public class MessageResponse implements Serializable {
 
 	public void setU(String u) {
 		this.u = u;
-	}
-
-	public String getF() {
-		return f;
-	}
-
-	public void setF(String f) {
-		this.f = f;
 	}
 
 	public char getMt() {
@@ -71,4 +63,11 @@ public class MessageResponse implements Serializable {
 		this.rt = rt;
 	}
 
+	public List<DFPlayerItemResponse> getDf() {
+		return df;
+	}
+
+	public void setDf(List<DFPlayerItemResponse> df) {
+		this.df = df;
+	}
 }

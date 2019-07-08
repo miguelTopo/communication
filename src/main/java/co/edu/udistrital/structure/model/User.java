@@ -17,6 +17,15 @@ public class User implements Serializable {
 	public User() {
 		// Basic Empty Constructor
 	}
+	
+	public User(String name, String email, String mobilePhone) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.mobilePhone = mobilePhone;
+	}
+
+
 
 	@Id private String id;
 

@@ -25,7 +25,11 @@ import co.edu.udistrital.event.enums.EventReiterativeType;
 import co.edu.udistrital.event.enums.EventType;
 import co.edu.udistrital.event.model.Event;
 import co.edu.udistrital.event.repository.EventRepository;
+import co.edu.udistrital.message.enums.MessageType;
+import co.edu.udistrital.rest.enums.ResponseType;
 import co.edu.udistrital.rest.event.model.EventResponse;
+import co.edu.udistrital.rest.message.model.MessageResponse;
+import co.edu.udistrital.rest.message.util.DictionaryDFPlayer;
 import co.edu.udistrital.structure.enums.State;
 import co.edu.udistrital.structure.model.Response;
 import co.edu.udistrital.structure.service.ResponseService;
@@ -124,7 +128,6 @@ public class EventService {
 			resource.setFileName(ZyosCDNFTP.getFileName(ext));
 			resource.setInputStream(event.getMultipartFile().getInputStream());
 			ZyosCDNFTP.uploadFileResource(resource);
-			event.setFile(ZyosCDNFTP.URI_HOST_MAIN + resource.getDatabasePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -153,27 +156,89 @@ public class EventService {
 		}
 	}
 
-	private EventResponse parseToEventResponse(Event ev) {
+	private String getDfPlayerDescription(String description) {
+		//// @formatter:off
+		return description
+			.replaceAll("60", "sesenta")
+			.replaceAll("59", "cincuenta y nueve")
+			.replaceAll("58", "cincuenta y ocho")
+			.replaceAll("57", "cincuenta y siete")
+			.replaceAll("56", "cincuenta y seis")
+			.replaceAll("55", "cincuenta y cinco")
+			.replaceAll("54", "cincuenta y cuatro")
+			.replaceAll("53", "cincuenta y tres")
+			.replaceAll("52", "cincuenta y dos")
+			.replaceAll("51", "cincuenta y uno")
+			.replaceAll("50", "cincuenta")
+			.replaceAll("49", "cuarenta y nueve")
+			.replaceAll("48", "cuarenta y ocho")
+			.replaceAll("47", "cuarenta y siete")
+			.replaceAll("46", "cuarenta y seis")
+			.replaceAll("45", "cuarenta y cinco")
+			.replaceAll("44", "cuarenta y cuatro")
+			.replaceAll("43", "cuarenta y tres")
+			.replaceAll("42", "cuarenta y dos")
+			.replaceAll("41", "cuarenta y uno")
+			.replaceAll("40", "cuarenta")
+			.replaceAll("39", "treinta y nueve")
+			.replaceAll("38", "treinta y ocho")
+			.replaceAll("37", "treinta y siete")
+			.replaceAll("36", "treinta y seis")
+			.replaceAll("35", "treinta y cinco")
+			.replaceAll("34", "treinta y cuatro")
+			.replaceAll("33", "treinta y tres")
+			.replaceAll("32", "treinta y dos")
+			.replaceAll("31", "treinta y uno")
+			.replaceAll("30", "treinta")
+			.replaceAll("29", "veintinueve")
+			.replaceAll("28", "veintiocho")
+			.replaceAll("27", "veintisiete")
+			.replaceAll("26", "veintiseis")
+			.replaceAll("25", "veinticinco")
+			.replaceAll("24", "veinticuatro")
+			.replaceAll("23", "veintitres")
+			.replaceAll("22", "veintidos")
+			.replaceAll("21", "veintiuno")
+			.replaceAll("20", "veinte")
+			.replaceAll("19", "diecinueve")
+			.replaceAll("18", "dieciocho")
+			.replaceAll("17", "diecisiete")
+			.replaceAll("16", "dieciséis")
+			.replaceAll("15", "quince")
+			.replaceAll("14", "catorce")
+			.replaceAll("13", "trece")
+			.replaceAll("12", "doce")
+			.replaceAll("11", "once")
+			.replaceAll("10", "diez")
+			.replaceAll("9", "nueve")
+			.replaceAll("8", "ocho")
+			.replaceAll("7", "siete")
+			.replaceAll("6", "seis")
+			.replaceAll("5", "cinco")
+			.replaceAll("4", "cuatro")
+			.replaceAll("3", "tres")
+			.replaceAll("2", "dos")
+			.replaceAll("1", "un");
+		// @formatter:on
+	}
+
+	private MessageResponse parseToEventResponse(Event ev) {
 		if (ev == null)
 			return null;
-		EventResponse eResponse = new EventResponse();
-		eResponse.setDesc(ev.getDescription());
-		eResponse.setF(ev.getFile());
-		eResponse.setDate(DateUtil.getTime(ev.getDate()));
-		return eResponse;
+		MessageResponse response = new MessageResponse(ResponseType.EVENT);
+		response.setMt('t');
+		response.setHour(DateUtil.getTime(ev.getDate()));
+		response.setM(ev.getDescription());
+		String messageToPlay = MessageFormat.format("Son las: {0} horas y {1} minutos. Recuerde: {2} ", ev.getDate().get(Calendar.HOUR_OF_DAY),
+			ev.getDate().get(Calendar.MINUTE), ev.getDescription());
+		response.setDf(DictionaryDFPlayer.getPhrase(getDfPlayerDescription(messageToPlay)));
+		return response;
 	}
 
 
-	public EventResponse getByCurrentHour(String homeUserId, Calendar calendar) {
-		Event e = new Event();
-		Calendar evCal = Calendar.getInstance();
-		evCal.setTime(calendar.getTime());
-		e.setDate(evCal);
-		e.setDescription("Este es un evento muy simple para notificación");
-		e.setFile("NOne");
-		return parseToEventResponse(e);
-//		List<Event> eventList = eventListByDate(homeUserId, calendar, true);
-//		return CollectionUtils.isEmpty(eventList) ? new EventResponse() : parseToEventResponse(eventList.get(0));
+	public MessageResponse getByCurrentHour(String homeUserId, Calendar calendar) {
+		List<Event> eventList = eventListByDate(homeUserId, calendar, true);
+		return CollectionUtils.isEmpty(eventList) ? new MessageResponse(ResponseType.EVENT) : parseToEventResponse(eventList.get(0));
 	}
 
 
