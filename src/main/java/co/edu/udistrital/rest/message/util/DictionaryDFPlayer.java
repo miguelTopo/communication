@@ -1213,6 +1213,8 @@ public class DictionaryDFPlayer {
 			add(new DFPlayerItem(13, 17, "fuente"));
 			add(new DFPlayerItem(13, 18, "diario"));
 			add(new DFPlayerItem(13, 19, "ordenador"));
+			add(new DFPlayerItem(13, 20, "mensajes"));
+			add(new DFPlayerItem(13, 21, "nuevos"));
 		}
 	};
 
